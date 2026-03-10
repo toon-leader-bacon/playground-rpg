@@ -1,0 +1,97 @@
+Final Fantasy 1,Final Fantasy 2,Final Fantasy 3,FFIV,FFV,FF VI,FF VII,FF VII Before Crisis,FF VII Core Crisis,FF VIII,FF IX,FF X ,FF X-2,FF XI,FF XII,FF Recurring Stats,FF Game Specific Stats
+HP ,HP,Level,Level,LV,LV,EXP,HP,Max HP,HP (Life),Level,Sphere Level,HP,Level,Level,Ability Points,
+MP,MP,Job Level,HP,HP,HP,LV,MP,Max Dmg per hit,Strength,HP,AP,MP,Subjob Level,HP,Accuracy,Rank Points
+Strength,Attack,Hit Points,MP,MP,MP,HP,Speed,Max AP,Vitality,MP,HP,Str.,HP,MP,Attack Power,Soldier Points
+Agility,Accuracy,Magic Points,EXP,Strength,Strength,MP,Exp,Max MP,Magic,Speed,MP,Mag.,MP,Mist,Bravery,Charisma
+Intelligence,Defense,Strength,Strength,Agility,Speed,Strength,,Steal Chance,Spirit,Strength,Strength,Def.,TP,EXP,Charge Time,Frame
+Stamina,Evasion,Agility,Speed,Stamina,Stamina,Dexterity,,AP cost reduction ,Speed,Magic,Defense,M.Def.,Strength,LP,Clan Points,Magic Accuracy
+Luck,Magic Defense,Vitality,Stamina,Magic,Magic,Vitality,,Crit Rate,Evade,Spirit,Magic,Agi.,Dexterity,CP,Command Points,License Points
+Attack,Strength,Intelligence,Intellect,Attack,Attack,Magic,,Gill drop multiplier,Hit,Attack,Magic Defense,Acc.,Vitality,Attack Powre,Defense,Summon Points
+Accuracy,Spirit,Mind,Spirit,Defense,Defense,Sprint,,Item drop multiplier,Luck,Defense,Agility,Eva.,Agility,Defense,Evasion,Technical Points
+Defence,Intelligence,Attack Power,Attack,Evasion,Evasion,Luck,,Item rarity multiplier,ATB (Active Time Battle),Evade,Luck,Luck,Intelligence,Magick Resist,Experience Points,Energy Points
+Evasion,Stamina,Attack Multiplier,Accuracy,Resistance,Magic Defense,Attack,,MP cost reduction,Crisis Level,Magic Def,Evasion,,Mind,Evade,Health Points,Piety
+Magic Defense,Agility,(Hits per attack),Defense,Weigth,Magic Evasion,Attack%,,Courage,Damage reduction,Magic Eva,Accuracy,,Charisma,Magick Evade,Intelligence,Determination
+,Magic,Accuracy,Evasion,Magic Defense,Hit Rate,Defense,,Projectile multiplier,,Magic Stone,MiniGame,,Attack,Strength,Jump,Bravery
+,,Magic Power,Magic Defense,Magic Evasion,EXP,Defense%,,Item potency increase,,EXP,LV,,Ranged Attack,Magick Power,KP,Faith
+,,Magic Multipler,Magic Evasion,Attack Multiplier,Magic AP,Magic Atk,,SP,,AP,EXP,,Defense,Vitality,Level,Judge Points
+,,Magic Accuracy,,Magic Multiplier,Escape Success,Magic Def,,,,Accuracy,HP,,<Elem> Resistance,Speed,Luck,Risk
+,,Defence,,EXP,Vigor,Magic Def%,,,,Reach,Speed,,,,Magic Defense,CP
+,,Defense Multiplier,,ABP,,,,,,Steal Chance,Endurance,,,,Magic Evasion,BP
+,,Evasion,,,,,,,,Steal Value,Attack,,,,Magic Points,LP
+,,Magic Defense Multiplier,,,,,,,,Item effectiveness (Chemist),Passign,,,,Magic Power,
+,,Magic Resistance,,,,,,,,Counter Rate,Blocking,,,,Mind,
+,,,,,,,,,,Body Temp,Shooting,,,,Move,
+,,,,,,,,,,Alert,Catching,,,,Speed,
+,,,,,,,,,,Back attack rates,,,,,Spirit,
+,,,https://finalfantasy.fandom.com/wiki/Final_Fantasy_VI_stats#Notes,,,,,,,Preemptive strike rate,,,,,Stamina,
+,,,,,,,,,,EXP drop rate,,,,,Strength,
+,,,,,,,,,,JP drop rate,,,,,Tactical Points,
+,,,,,,,,,,Gill drop rate,,,,,Use,
+,,,,,,,,,,"Absorbtion rate (HP, MP)",,,,,Vitality,
+,,,,,,,,,,,,,,,Weight,
+,,,,,Relics (effects),,,Other,,,Abilities,,Invisible Stats,,,
+,,,,,Reflect,,,Soldier Points,,,Attack,,Evasion,,,
+,,,,,Guard,,,,,,Summon,,Accuracy,,,
+,,,,,Muscle,,,,,,Skill,,Addle% (Cast speed + cooldown),,,
+,,,,,Sneak,,,,,,Special,,Crit Damage,,,
+,,,,,Rage,,,,,,White/ Black magic,,Crit Rate,,,
+,,,,,,,,,,,Defend,,Cure Potency,,,
+,,,,,,,,,,,Escape,,Damage Taken,,,
+,,,,,,,,,,,Shield,,Enmity (Hate per sec),,,
+,,,Aim,Brawl,Commands,,,,,,Boost,,Evasion,,,
+,,,Analyze,2-Handed,Attack,,,,,,,,Haste% (melee delay),,,
+,,,Bluff,Preemptiv,Magic,,,,,,Aeon Abilities,,HP recoverd while healing,,,
+,,,Brace,Learning,Summon,,,,,,Aim,,Magic Accuracy,,,
+,,,Cover,Blue Magic,Items,,,,,,Armor Pen,,Magic Evasion,,,
+,,,Cry,Dmg Floor,Row,,,,,,Multicast,,Movement Speed,,,
+,,,Focus,Out of Combat Evade,Defend,,,,,,Drain,,MP Recoverd while healing,,,
+,,,Kick,Caution,Equip,,,,,,Life,,Potency of cure effect received,,,
+,,,Pray,Focus,Trance,,,,,,Luck,,Range Accuracy,,,
+,,,Steal,Chakra,Revert,,,,,,<Dmage Type> break,,Refresh (MP per sec),,,
+,,,Summon,Mantra,Steal,,,,,,Reflex,,Regen (Hp per tick),,,
+,,,Throw,Capture,Tools,,,,,,,,Regain (TP per tick),,,
+,,,Black Magic,Check,Blitz,,,,,,Auto-Ability,,Slow%,,,
+,,,Item Magic,Observe,Runic,,,,,,Piercing,,Spell Interruption% ,,,
+,,,Ninjutsu,Analyze,Throw,,,,,,Initiative,,,,,
+,,,Summon,Red Magic,SwdTech,,,,,,First Strike,,Job Trait Stats,,,
+,,,Twincast,X-Magic,Bushido,,,,,,Item Potency,,Resist <Status>,,,
+,,,White Magic,Time Magic,Rage,,,,,,Evade Chance,,<Enemy> Killer,,,
+,,,,Summon,Leap,,,,,,Counter change,,MP Cost reduction,,,
+,,,,Conjure,Slot,,,,,,Magic evade ,,TP Cost reduction,,,
+,,,,Call,Dance,,,,,,Mana Turbo,,Counter,,,
+,,,,Tame,Lore,,,,,,Mana cost reduction,,Critical Defense Bonus,,,
+,,,,Throw,Sketch,,,,,,AP growth rate,,Divine Veil (heal multiplier),,,
+,,,,Aim,Mimic,,,,,,Gill droprate,,Double attack%,,,
+,,,,X-Fight,Magitek,,,,,,Damage Limit Break,,Dual Wield,,,
+,,,,Hide,Jump,,,,,,Capture,,Fast Cast% (Cast time),,,
+,,,,Sing,Land,,,,,,<Dmg-Type> Reduce,,Kick Attacks% (extra mele),,,
+,,,,Jump,Mug (Capture),,,,,,<Dmg-Type> null,,Magic Attack Bonus,,,
+,,,,Flirt,GP Rain,,,,,,<Dmg-Type> heals,,Magic Burst Bonus (Combo bonus),,,
+,,,,Dance,Control,,,,,,Encounter rate,,Magic Defense Bonus,,,
+,,,,Mix,X Fight,,,,,,MP Limit Break,,Martial Arts (melee attack deley),,,
+,,,,Drink,Dualcast,,,,,,HP Limit Break,,Recycle (Conserve ammo),,,
+,,,,Recover,Pray,,,,,,,,Snapshot (range skill cooldwon),,,
+,,,,Revive,Possess,,,,,,Status,,Store TP (tp growth),,,
+,,,,Dark Arts,Shock,,,,,,Haste (Attacks per turn),,TP growth down (curse),,,
+,,,,Oath,Summon,,,,,,Dmg Reduction,,Treasure Hunter,,,
+,,,,Combine,Counter,,,,,,Reflect,,Triple Attack%,,,
+,,,,Predict,Cover,,,,,,Regen (tick rate),,Weapon Skill Damage,,,
+,,,,,1 MP Cost,,,,,,Guard,,,,,
+,,,,,Reflect,,,,,,Scan,,Special Traits,,,
+,,,,,Protect,,,,,,Sentinel,,Breath Damage,,,
+,,,,,Shell,,,,,,Weight,,Convert dmg to TP,,,
+,,,,,Float,,,,,,Tough,,Crit hit evasion,,,
+,,,,,Regen,,,,,,,,Magic crit hit rate%,,,
+,,,,,Haste,,,,,,Ability Recover time,,Magic critical hit damage%,,,
+,,,,,Guard,,,,,,,,Quadruple Attack%,,,
+,,,,,Double EXP,,,,,,,,Quick Magic% (chance to cast instantly),,,
+,,,,,Vigilance,,,,,,,,Weapon Skill Accuracy,,,
+,,,,,Dash,,,,,,,,,,,
+,,,,,Encounter Rate,,,,,,,,Other,,,
+,,,,,Undead,,,,,,,,<skill> learning rate,,,
+,,,,,Reflex,,,,,,,,Damage,,,
+,,,,,Accuracy,,,,,,,,Delay,,,
+,,,,,,,,,,,,,TP Bonus,,,
+,,,,,,,,,,,,,Fame,,,
+,,,,,,,,,,,,,Reputation,,,
+,,,,,,,,,,,,,Magic Accuracy,,,

@@ -34,7 +34,7 @@ Before writing any implementation code, define:
 
 ## Step 5 — Write Tests
 
-Every mechanic ships with tests. Tests live alongside the system they test in a `tests/` subfolder of the relevant domain (e.g., `engine/battle/tests/`).
+Every mechanic ships with tests. Tests live alongside the system they test in the top level `tests/` directory and has a parallel structure to the engine or generator directories (eg `/tests/engine/battle/...`).
 
 Required tests for every new mechanic:
 
@@ -60,9 +60,19 @@ If there are mocks, it should follow the five step pattern:
 
 Provide a simple runnable Godot scene that exercises the mechanic end-to-end. The scene does not need a UI or human input — it can run automatically and emit results to the console via `print()`. The scene should demonstrate the mechanic working with the example configs from Step 4.
 
-Place integration scenes in `engine/<domain>/tests/` alongside unit tests.
+Place integration scenes in `tests/engine/<domain>/` alongside unit tests.
 
-## Step 7 — Report Back
+## Step 7 — Verify Tests Pass
+
+Before reporting back, run the full test suite headlessly and confirm 0 failures:
+
+```bash
+/Applications/Godot.app/Contents/MacOS/Godot --headless -s addons/gdUnit4/bin/GdUnitCmdTool.gd --ignoreHeadlessMode --add "res://tests/"
+```
+
+Do not report complete if tests are failing.
+
+## Step 8 — Report Back
 
 When complete, report:
 

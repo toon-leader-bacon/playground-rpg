@@ -1,0 +1,23 @@
+[gd_resource type="Resource" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://schema/monsters/StatBlock.gd" id="1_sb"]
+[ext_resource type="Script" path="res://schema/monsters/MonsterConfig.gd" id="2_mc"]
+
+[sub_resource type="Resource" id="StatBlock_1"]
+script = ExtResource("1_sb")
+max_hp = 45
+attack = 65
+defense = 25
+speed = 70
+
+[resource]
+script = ExtResource("2_mc")
+id = "fire_lizard"
+display_name = "Fire Lizard"
+base_stats = SubResource("StatBlock_1")
+type_tags = Array[int]([2])
+move_ids = Array[String](["ember", "quick_step"])
+ai_style = 0
+base_xp_yield = 20
+encounter_weight = 1.0
+sprite_path = ""

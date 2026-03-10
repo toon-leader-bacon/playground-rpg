@@ -1,185 +1,122 @@
-# CLAUDE.md — JRPG Engine Project
+# JRPG Project
 
-This file defines how Claude Code should work in this codebase. Read it before doing anything else.
-This, and all other CLAUDE.md files are 'living' files. Suggest updates or creation of any such file to the developer for approval.
-Refer to `DESIGN_BIBLE.md` for full design intent, inspiration, and open questions.
+This file describes the project, the separation of concerns therein, and instructions for inter-library design and development.
+This, and all other CLAUDE.md files are 'living' documents. After major development efforts, suggest changes to a relevant CLAUDE.md file(s) to ensure they are up to date.
+CLAUDE.md files capture the "How to build" this project.
+The DESIGN_BIBLE.md, along with the user's direct instruction/ messages captures "What to build" and "Why to build it".
+
+In project management speak, the DESIGN_BIBLE.md document represents a static product owner. Only I (a human) should update it. The DESIGN_BIBLE (along with the initial human prompt) answers the question of "What to build" and "why to build it", where as the claude.md and rules answer the questions of "how to build it".
 
 ---
 
 ## Project Summary
 
-This is a **configurable JRPG engine** built in Godot 4, with GDScript. The long-term goal is a content generator that produces playable JRPG configurations automatically.
+This project contains two distinct development parts:
+
+- Configurable JRPG **engine** built in Godot 4 with GDScript.
+- A content **generator** that builds the configurations that will be loaded into the engine.
+
 The engine and generator are strictly separate systems; The engine has zero direct awareness of the generator, only indirectly coupling via the "content" `.tres` configuration files created by the generator (or other sources).
+The engine and generator may both import from `schema/`, but it only contains data models. Engine and Generator must not import from each other.
 
----
-
-## Coding Standards
-
-- **Always use typed GDScript.** Every variable, parameter, and return type must be explicitly typed. No untyped variables.
-
-  ```gdscript
-  # CORRECT
-  var speed: float = 5.0
-  func calculate_damage(base: int, modifier: float) -> int:
-
-  # WRONG
-  var speed = 5.0
-  func calculate_damage(base, modifier):
-  ```
-
-- **Naming convention**:
-  - Files: PascalCase.gd, snake_case.tscn
-  - Signals: past_tense_snake_case (e.g., battle_started, not on_battle_start)
-  - Constants: ALL_CAPS_SNAKE
-  - Private methods: _leading_underscore
-
-- **No game logic in `_ready()` or `_process()`.** These are for initialization and per-frame visual updates only. Gameplay logic belongs in dedicated methods called by the appropriate Manager autoload.
-- **All inter-system communication goes through `EventBus`.** Never hold a direct reference to another system's node if that communication can be expressed as a signal. Direct references are acceptable within the same scene/subsystem.
-- **Do not call `load()` or `ResourceLoader.load()` directly anywhere.** All resource loading goes through `ConfigLoader`.
-- **Do not use `get_node()` with long absolute paths.** Use `@onready var` with relative paths or signals.
+There is a third, parallel region related to **tests** for the above two parts.
+The tests directory must match the exact structure of the engine and generator directories to stay organized.
 
 ---
 
 ## Project Structure
 
 - Engine and Generator are in separate top level directories.
-- The `engine/` dir contains folders for major mechanic/ features. Each has a model, view & controller directory. There may be several different models or controllers with specific implementations (Battle1v1.gd vs BattleATB.gd for example)
-- A `.tscn` scene and its primary `.gd` script always live in the same folder.
-- Pure logic scripts with no associated scene belong in the `engine/shared` directory
-- If a new file's home is ambiguous, ask rather than guess.
+- Configurations (created by the generator, consumed by the engine) should live in the `content/` directory
+- `schema/` defines Resource class shapes. `content/` contains `.tres` instances of those classes.
+- The `tests/` directory is a parallel tree that must mirror the `engine/` and `generator/` directories exactly.
+
+An example directory structure is as follows (this example is for illustration, and may not be the actual current implementation)
 
 ```
 res://
-├── engine/
-│   ├── core/                  # Autoloads: GameState, EventBus, ConfigLoader, etc.
-│   ├── shared/                # Common scripts, especially data model objects, used across multiple components
-│   │   ├── model/
-│   │   ├── controller/
-│   │   ├── view/
-│   │   └── tests/
+├── engine/       # Scripts related to actually running a game
+│   ├── core/     
 │   ├── battle/
-│   │   ├── model/             # BattleState.gd, CombatResult.gd (pure data, serializable)
-│   │   ├── controller/        # BattleManager.gd, combat system implementations
-│   │   ├── view/              # BattleUI.tscn + BattleUI.gd, animations
-│   │   └── tests/
 │   ├── world/
-│   │   ├── model/             # ZoneData.gd, EncounterTable.gd
-│   │   ├── controller/        # WorldManager.gd
-│   │   ├── view/              # WorldMap.tscn, TileMapController.gd
-│   │   └── tests/
 │   ├── entities/
-│   │   ├── model/             # Entity.gd, Move.gd, StatBlock.gd (the base resource classes)
-│   │   ├── controller/        # EntityController.gd
-│   │   ├── view/              # EntitySprite.tscn
-│   │   └── tests/
 │   ├── etc...
 │   └── ui/
-│       └── view/              # HUD.tscn, Menus, etc.
 │
-├── generator/                 # Entirely separate — engine has zero awareness of this
-│   ├── world/
-│   ├── monster/
-│   ├── moves/
-│   └── etc.../
-│
-├── content/                   # All .tres config files live here (output of generator, input to engine)
+├── generator/     # Entirely separate — engine has zero awareness of this
+│   ├── zones/
 │   ├── monsters/
 │   ├── moves/
-│   ├── zones/
 │   └── etc.../
 │
-└── assets/
- ├── sprites/
- ├── audio/
- └── fonts/
+├── schema/        # Engine and generator may import from schema. Schema must not import from any other directory
+│   ├── battle/
+│   ├── monsters/
+│   ├── world/
+│   └── moves/
+│
+├── content/       # All .tres config files live here (the particular implementations for the schema objects)
+│   ├── monsters/
+│   ├── moves/
+│   ├── world/
+│   └── etc.../
+|
+├── tests/          # tests directory matches the engine and generator directory exactly
+│   ├── engine/
+|   |   ├── core/
+|   |   ├── battle/
+|   |   ├── world/
+|   |   └── etc.../
+│   └── generator/
+|       ├── zones/
+|       ├── monster/
+|       ├── moves/
+|       └── etc.../
+│
+└── assets/        # Will be populated by a human at the relevant time
+    ├── sprites/
+    ├── audio/
+    └── fonts/
 ```
 
 ---
 
-## Architecture Rules
+## Other Rules
 
-### The Config-Driven Rule
-
-Adding new *content* (monsters, moves, zones) must never require code changes. Adding new *mechanic types* requires engine code, structured as an enum + match statement. Never modify existing match branches when adding new options — only add new ones.
-
-### MVC Discipline
-
-- **Model scripts** (`models/`): Pure data. No Node inheritance unless strictly required by Godot. Must be serializable to/from `.tres`.
-- **View scenes** (`views/`): Display only. No game state mutations. No direct calls to Manager autoloads — listen to EventBus signals instead.
-- **Controller scripts** (`controllers/` and `core/`): Mediate between model and view. Own the game loop logic. The only layer allowed to mutate GameState.
-
-### The Engine/Generator Boundary
-
-The `engine/` directory must never import from or reference `generator/`. The generator produces `.tres` files into `content/`; the engine reads from `content/`. That is the only connection between them.
-
-### Autoloads
-
-The five core autoloads are registered in Godot's Project Settings. Do not create new autoloads without explicit instruction. All five live in `engine/core/`.
-
-### EventBus
-
-Declares signals only. No logic, no state.
-
-- **EventBus signals are append-only.** Never remove or rename an existing signal — this breaks all listeners silently. Only add new signals.
-- All inter-system events route through EventBus. If two systems need to communicate, it goes here.
-
-Current signals (add to this list as the project grows, never remove):
-
-```gdscript
-signal battle_started(enemy_data: Resource)
-signal battle_ended(result: String)       # "win", "lose", "flee"
-signal entity_fainted(entity_id: String)
-signal xp_gained(amount: int)
-signal zone_transition_requested(zone_id: String)
-signal save_requested()
-signal load_requested()
-```
-
-### GameState
-
-Single source of truth for all mutable game data. If you are tempted to store game state on a scene node, it goes in GameState instead.
-
-- Only Controller-layer scripts may write to GameState properties.
-- View scripts may read GameState but never write to it.
-
-### ConfigLoader
-
-The only place in the codebase that touches the filesystem or calls `load()`. All other scripts request resources through ConfigLoader.
-
-### BattleManager
-
-Owns the battle loop entirely. No scene or other autoload may mutate battle state directly — all battle state changes go through BattleManager's methods or via EventBus signals.
-
-### WorldManager
-
-Owns zone transitions, encounter triggering, and world map state. Same rules as BattleManager — no external script mutates world state directly.
-
----
-
-## Config Files
-
-- All game content is defined in `.tres` Godot Resource files in `content/`.
-- Resource class definitions (the GDScript that defines the schema) live in `engine/entities/models/` or the relevant `models/` folder.
-- `ConfigLoader` is responsible for all loading and validation.
-- When creating a new Resource class, all properties must use `@export` with full type annotations.
+- The `engine/` directory must never import from or reference `generator/`. The generator produces `.tres` files into `content/`; the engine reads from `content/`. That is the only connection between them.
+- The `generator/` may use ONLY data model objects from `engine/`, but only data model objects. Engine logic (controller scripts) should NOT be used in the generator
+- All game content is defined in `.tres` Godot Resource files in `content/` (typically created by the generator)
 
 ---
 
 ## What NOT to Do
 
-- Do not hardcode monster stats, move data, or zone layouts in GDScript.
-- Do not add story, dialogue systems, or narrative content — out of scope.
-- Do not use Unity-style patterns. Use Godot's node tree and signals.
-- Do not let `engine/` reference `generator/` in any way.
-- Do not call `load()` directly — use `ConfigLoader`.
-- Do not store game state on scene nodes — use `GameState`.
-- Do not mutate battle or world state outside of their respective Manager autoloads.
-- Do not remove or rename existing EventBus signals — append only.
+- Do not add story, dialogue systems, or narrative content — out of scope. Just focus on building the engine with configurable mechanics, and the generator which creates configurable controls for that dynamic engine.
 
----
+## Godot Conventions
 
-## Asking for Clarification
+### `.tres` files for custom Resource classes
 
-If a task is ambiguous about which combat system mode to use, assume **1v1 turn-based (Pokémon-style)** as the default unless told otherwise.
+Always use `type="Resource"` with an explicit `script = ExtResource(...)` reference — never `type="ClassName"`. Using the class name requires Godot's global class cache to be populated, which is unreliable outside the editor (headless runs, fresh clones,
+etc.).
 
-If a task would require resolving an open question from `DESIGN_BIBLE.md`, **stop and flag it** rather than making an assumption. Open questions are design decisions that the developer wants to make explicitly.
+Correct pattern:
+
+```.tres
+[ext_resource type="Script" path="res://schema/monsters/MyClass.gd" id="1_id"]
+
+[resource]
+script = ExtResource("1_id")
+```
+
+### Headless class cache
+
+Any time you add a new class_name script, run godot --headless --import once before running .tscn files directly. gdUnit4 tests work without this; scene runs need the cache.
+
+### Running tests headlessly
+
+```bash
+/Applications/Godot.app/Contents/MacOS/Godot --headless -s addons/gdUnit4/bin/GdUnitCmdTool.gd --ignoreHeadlessMode --add "res://tests/"
+```
+
+Use `--add "res://tests/path/to/TestFile.gd"` to run a single suite.

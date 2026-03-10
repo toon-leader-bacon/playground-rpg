@@ -1,0 +1,23 @@
+[gd_resource type="Resource" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://schema/monsters/StatBlock.gd" id="1_sb"]
+[ext_resource type="Script" path="res://schema/monsters/MonsterConfig.gd" id="2_mc"]
+
+[sub_resource type="Resource" id="StatBlock_1"]
+script = ExtResource("1_sb")
+max_hp = 90
+attack = 40
+defense = 75
+speed = 15
+
+[resource]
+script = ExtResource("2_mc")
+id = "stone_golem"
+display_name = "Stone Golem"
+base_stats = SubResource("StatBlock_1")
+type_tags = Array[int]([4])
+move_ids = Array[String](["rock_slam", "recover", "slow_down"])
+ai_style = 0
+base_xp_yield = 35
+encounter_weight = 0.5
+sprite_path = ""

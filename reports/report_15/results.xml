@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites id="2026-03-07" name="report_15" tests="63" failures="0" skipped="0" flaky="0" time="0.000">
+	<testsuite id="0" name="TestStatBiasEntry" package="tests/generator/stats" timestamp="2026-03-07T20:45:00" hostname="localhost" tests="8" failures="0" errors="0" skipped="0" flaky="0" time="0.048">
+		<testcase name="test_default_fields" classname="TestStatBiasEntry" time="0.005">
+		</testcase>
+		<testcase name="test_custom_weight" classname="TestStatBiasEntry" time="0.001">
+		</testcase>
+		<testcase name="test_positive_rank" classname="TestStatBiasEntry" time="0.003">
+		</testcase>
+		<testcase name="test_negative_rank_stored_as_is" classname="TestStatBiasEntry" time="0.008">
+		</testcase>
+		<testcase name="test_min_val_and_max_val" classname="TestStatBiasEntry" time="0.006">
+		</testcase>
+		<testcase name="test_std_dev_factor_override" classname="TestStatBiasEntry" time="0.007">
+		</testcase>
+		<testcase name="test_negative_rank_minus1_resolves_to_lowest_in_build_authored" classname="TestStatBiasEntry" time="0.006">
+		</testcase>
+		<testcase name="test_negative_rank_minus2_resolves_to_second_lowest_in_build_authored" classname="TestStatBiasEntry" time="0.007">
+		</testcase>
+	</testsuite>
+	<testsuite id="1" name="TestStatArchetypes" package="tests/generator/stats" timestamp="2026-03-07T20:45:00" hostname="localhost" tests="13" failures="0" errors="0" skipped="0" flaky="0" time="0.090">
+		<testcase name="test_tank_returns_non_empty_dict" classname="TestStatArchetypes" time="0.001">
+		</testcase>
+		<testcase name="test_tank_hp_is_highest" classname="TestStatArchetypes" time="0.008">
+		</testcase>
+		<testcase name="test_tank_defense_is_second_highest" classname="TestStatArchetypes" time="0.007">
+		</testcase>
+		<testcase name="test_tank_speed_is_lowest" classname="TestStatArchetypes" time="0.007">
+		</testcase>
+		<testcase name="test_glass_cannon_returns_non_empty_dict" classname="TestStatArchetypes" time="0.006">
+		</testcase>
+		<testcase name="test_glass_cannon_attack_is_highest" classname="TestStatArchetypes" time="0.006">
+		</testcase>
+		<testcase name="test_glass_cannon_defense_is_lowest" classname="TestStatArchetypes" time="0.006">
+		</testcase>
+		<testcase name="test_speedster_returns_non_empty_dict" classname="TestStatArchetypes" time="0.007">
+		</testcase>
+		<testcase name="test_speedster_speed_is_highest" classname="TestStatArchetypes" time="0.006">
+		</testcase>
+		<testcase name="test_speedster_attack_is_second_highest" classname="TestStatArchetypes" time="0.007">
+		</testcase>
+		<testcase name="test_speedster_defense_is_lowest" classname="TestStatArchetypes" time="0.007">
+		</testcase>
+		<testcase name="test_balanced_returns_empty_dict" classname="TestStatArchetypes" time="0.007">
+		</testcase>
+		<testcase name="test_balanced_sum_equals_total" classname="TestStatArchetypes" time="0.007">
+		</testcase>
+	</testsuite>
+	<testsuite id="2" name="TestStatBlockFactoryAuthored" package="tests/generator/stats" timestamp="2026-03-07T20:45:00" hostname="localhost" tests="14" failures="0" errors="0" skipped="0" flaky="0" time="0.096">
+		<testcase name="test_sum_equals_total_points_with_weight_biases" classname="TestStatBlockFactoryAuthored" time="0.000">
+		</testcase>
+		<testcase name="test_sum_equals_total_points_with_rank_biases" classname="TestStatBlockFactoryAuthored" time="0.001">
+		</testcase>
+		<testcase name="test_high_weight_stat_larger_than_low_weight_stat" classname="TestStatBlockFactoryAuthored" time="0.008">
+		</testcase>
+		<testcase name="test_rank_1_stat_is_highest" classname="TestStatBlockFactoryAuthored" time="0.006">
+		</testcase>
+		<testcase name="test_rank_neg1_stat_is_lowest" classname="TestStatBlockFactoryAuthored" time="0.007">
+		</testcase>
+		<testcase name="test_min_val_respected_before_scaling" classname="TestStatBlockFactoryAuthored" time="0.007">
+		</testcase>
+		<testcase name="test_max_val_respected_in_final_output" classname="TestStatBlockFactoryAuthored" time="0.006">
+		</testcase>
+		<testcase name="test_max_val_slack_redistributed_to_unconstrained_stats" classname="TestStatBlockFactoryAuthored" time="0.007">
+		</testcase>
+		<testcase name="test_seeded_rng_is_deterministic" classname="TestStatBlockFactoryAuthored" time="0.007">
+		</testcase>
+		<testcase name="test_empty_biases_matches_build_gaussian_total" classname="TestStatBlockFactoryAuthored" time="0.005">
+		</testcase>
+		<testcase name="test_add_random_accent_adds_one_stat_from_candidates" classname="TestStatBlockFactoryAuthored" time="0.008">
+		</testcase>
+		<testcase name="test_add_random_accent_does_not_modify_base_dict" classname="TestStatBlockFactoryAuthored" time="0.006">
+		</testcase>
+		<testcase name="test_add_random_accent_empty_candidates_returns_copy" classname="TestStatBlockFactoryAuthored" time="0.006">
+		</testcase>
+		<testcase name="test_add_random_accent_accent_stat_used_in_build_authored" classname="TestStatBlockFactoryAuthored" time="0.006">
+		</testcase>
+	</testsuite>
+	<testsuite id="3" name="TestStatBlockFactory" package="tests/generator/stats" timestamp="2026-03-07T20:45:00" hostname="localhost" tests="17" failures="0" errors="0" skipped="0" flaky="0" time="0.122">
+		<testcase name="test_build_empty_creates_all_keys_at_zero" classname="TestStatBlockFactory" time="0.001">
+		</testcase>
+		<testcase name="test_build_empty_with_custom_names" classname="TestStatBlockFactory" time="0.000">
+		</testcase>
+		<testcase name="test_build_from_values_sets_correct_values" classname="TestStatBlockFactory" time="0.008">
+		</testcase>
+		<testcase name="test_build_from_values_preserves_order" classname="TestStatBlockFactory" time="0.007">
+		</testcase>
+		<testcase name="test_build_from_dict_sets_all_entries" classname="TestStatBlockFactory" time="0.006">
+		</testcase>
+		<testcase name="test_build_random_produces_values_in_range" classname="TestStatBlockFactory" time="0.006">
+		</testcase>
+		<testcase name="test_build_random_sets_all_stat_names" classname="TestStatBlockFactory" time="0.007">
+		</testcase>
+		<testcase name="test_build_random_ranged_respects_per_stat_ranges" classname="TestStatBlockFactory" time="0.006">
+		</testcase>
+		<testcase name="test_gaussian_total_sum_equals_total_points" classname="TestStatBlockFactory" time="0.006">
+		</testcase>
+		<testcase name="test_gaussian_total_produces_all_stat_keys" classname="TestStatBlockFactory" time="0.007">
+		</testcase>
+		<testcase name="test_gaussian_total_all_values_non_negative_by_default" classname="TestStatBlockFactory" time="0.007">
+		</testcase>
+		<testcase name="test_gaussian_total_respects_min_per_stat_before_scaling" classname="TestStatBlockFactory" time="0.007">
+		</testcase>
+		<testcase name="test_gaussian_total_seeded_rng_is_deterministic" classname="TestStatBlockFactory" time="0.007">
+		</testcase>
+		<testcase name="test_gaussian_total_high_std_dev_produces_spread" classname="TestStatBlockFactory" time="0.007">
+		</testcase>
+		<testcase name="test_gaussian_total_single_stat_equals_total" classname="TestStatBlockFactory" time="0.006">
+		</testcase>
+		<testcase name="test_load_pokemon_style_from_config_loader" classname="TestStatBlockFactory" time="0.006">
+		</testcase>
+		<testcase name="test_load_ff_simple_from_config_loader" classname="TestStatBlockFactory" time="0.007">
+		</testcase>
+	</testsuite>
+	<testsuite id="4" name="TestGenericStatBlock" package="tests/generator/stats" timestamp="2026-03-07T20:45:01" hostname="localhost" tests="11" failures="0" errors="0" skipped="0" flaky="0" time="0.076">
+		<testcase name="test_set_and_get_stat" classname="TestGenericStatBlock" time="0.000">
+		</testcase>
+		<testcase name="test_get_stat_returns_default_for_missing_key" classname="TestGenericStatBlock" time="0.006">
+		</testcase>
+		<testcase name="test_has_stat_true_after_set" classname="TestGenericStatBlock" time="0.007">
+		</testcase>
+		<testcase name="test_has_stat_false_for_missing_key" classname="TestGenericStatBlock" time="0.006">
+		</testcase>
+		<testcase name="test_stat_names_returns_all_keys" classname="TestGenericStatBlock" time="0.007">
+		</testcase>
+		<testcase name="test_serialize_round_trip_single_stat" classname="TestGenericStatBlock" time="0.008">
+		</testcase>
+		<testcase name="test_serialize_preserves_all_stat_names" classname="TestGenericStatBlock" time="0.006">
+		</testcase>
+		<testcase name="test_deserialize_empty_dict_produces_empty_block" classname="TestGenericStatBlock" time="0.006">
+		</testcase>
+		<testcase name="test_deserialize_update_overwrites_existing_keys" classname="TestGenericStatBlock" time="0.006">
+		</testcase>
+		<testcase name="test_deserialize_update_adds_new_keys" classname="TestGenericStatBlock" time="0.005">
+		</testcase>
+		<testcase name="test_deep_copy_produces_independent_instance" classname="TestGenericStatBlock" time="0.007">
+		</testcase>
+	</testsuite>
+</testsuites>

@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://t5li3x4jb2h8"
+
+[deps]
+
+files=["res://generator/stats/FFStats.Final Fantasy 2.translation", "res://generator/stats/FFStats.Final Fantasy 3.translation", "res://generator/stats/FFStats.FFIV.translation", "res://generator/stats/FFStats.FFV.translation", "res://generator/stats/FFStats.FF VI.translation", "res://generator/stats/FFStats.FF VII.translation", "res://generator/stats/FFStats.FF VII Before Crisis.translation", "res://generator/stats/FFStats.FF VII Core Crisis.translation", "res://generator/stats/FFStats.FF VIII.translation", "res://generator/stats/FFStats.FF IX.translation", "res://generator/stats/FFStats.FF X .translation", "res://generator/stats/FFStats.FF X.translation", "res://generator/stats/FFStats.FF XI.translation", "res://generator/stats/FFStats.FF XII.translation", "res://generator/stats/FFStats.FF Recurring Stats.translation", "res://generator/stats/FFStats.FF Game Specific Stats.translation"]
+
+source_file="res://generator/stats/FFStats.csv"
+dest_files=["res://generator/stats/FFStats.Final Fantasy 2.translation", "res://generator/stats/FFStats.Final Fantasy 3.translation", "res://generator/stats/FFStats.FFIV.translation", "res://generator/stats/FFStats.FFV.translation", "res://generator/stats/FFStats.FF VI.translation", "res://generator/stats/FFStats.FF VII.translation", "res://generator/stats/FFStats.FF VII Before Crisis.translation", "res://generator/stats/FFStats.FF VII Core Crisis.translation", "res://generator/stats/FFStats.FF VIII.translation", "res://generator/stats/FFStats.FF IX.translation", "res://generator/stats/FFStats.FF X .translation", "res://generator/stats/FFStats.FF X.translation", "res://generator/stats/FFStats.FF XI.translation", "res://generator/stats/FFStats.FF XII.translation", "res://generator/stats/FFStats.FF Recurring Stats.translation", "res://generator/stats/FFStats.FF Game Specific Stats.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

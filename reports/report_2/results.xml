@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites id="2026-03-06" name="report_2" tests="10" failures="1" skipped="0" flaky="0" time="0.000">
+	<testsuite id="0" name="TestConfigLoading" package="tests/engine/entities" timestamp="2026-03-06T15:04:32" hostname="localhost" tests="10" failures="1" errors="0" skipped="0" flaky="0" time="0.012">
+		<testcase name="test_load_fire_lizard_returns_non_null" classname="TestConfigLoading" time="0.008">
+			<failure message="FAILED: res://tests/engine/entities/TestConfigLoading.gd:9" type="FAILURE">
+<![CDATA[
+Expecting: not to be '<null>'
+]]>
+			</failure>
+		</testcase>
+	</testsuite>
+</testsuites>

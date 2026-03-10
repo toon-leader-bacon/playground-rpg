@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://cin6v8pb6ps7h"]
+
+[ext_resource type="Script" uid="uid://bilwkkvyjd3ab" path="res://tests/engine/entities/MonsterIntegration.gd" id="1_intgr"]
+
+[node name="MonsterIntegration" type="Node" unique_id=306856929]
+script = ExtResource("1_intgr")

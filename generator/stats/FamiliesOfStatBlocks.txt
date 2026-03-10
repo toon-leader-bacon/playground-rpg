@@ -1,0 +1,19 @@
+Family of stats:
+
+Pokemon: HP, Attack, Defense, Special Attack, Special Defense, Speed, Evasion, Accuracy
+
+Chrono Trigger: Strength, Accuracy, Speed, Magic, Evasion, Stamina, Magic Defense
+
+Skies of Arcadia: HP/ MaxHP: Mp/ MaxMP, spirit/ MaxSpirit, power, vigor, will, agile, quick, attack, defense, magDef, Hit%, Dodge%, Swashbuckler
+
+Diablo primary stats: Strength, Dexterity, vitality, magic
+Diablo Imortal Core Stats: Strength, Intelligence, Fortitude, Vitality, Willpower
+Diablo Imortal Secondary Stats:     Accuracy Rating, Armor, Armor Penetration, Cooldown Reduced, Damage, Damage Increased, Defense Increased,  Evasion Rating, Life, Potency, Resistance 
+
+Fire Emblem (Three Houses) (Base Stats): Movement MV, Strength STR, Magic MAG, Dexterity DEX, Speed SPD, Luck LCK, Defense DEF, Resistance RES, Charm CHA
+
+Fire Emblem (Three Houses) (Derived Stats): Attack ATK, Attack Speed, Avoidance Rate AVO, Critical Hit Rate CRIT, Critical  Hit Avoidance Rate (CRIT AVO), Hit Rate HIT, Might MT, Protect PRT, Range RNG, Resilience RSL, Weight WT
+
+Secret of Mana: Str, Agi, Con, Int, Wis, Attack, Hit%, Defense, Evade%, Magic Def
+
+Fallout New Vegas: Strength, Perception, Endurance, Charisma, Intelligence, Agility, Luck

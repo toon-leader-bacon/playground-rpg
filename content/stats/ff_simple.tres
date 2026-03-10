@@ -1,0 +1,7 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://schema/stats/GenericStatBlock.gd" id="1_gsb"]
+
+[resource]
+script = ExtResource("1_gsb")
+stats = {"hp": 60.0, "mp": 30.0, "strength": 20.0, "agility": 15.0, "vitality": 18.0, "magic": 12.0, "spirit": 10.0, "luck": 10.0}

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites id="2026-03-06" name="report_4" tests="35" failures="0" skipped="0" flaky="0" time="0.000">
+	<testsuite id="0" name="TestMonsterFactory" package="tests/generator/monsters" timestamp="2026-03-06T15:05:41" hostname="localhost" tests="7" failures="0" errors="0" skipped="0" flaky="0" time="0.044">
+		<testcase name="test_build_produces_config_with_correct_fields" classname="TestMonsterFactory" time="0.009">
+		</testcase>
+		<testcase name="test_build_uses_default_ai_style" classname="TestMonsterFactory" time="0.001">
+		</testcase>
+		<testcase name="test_build_uses_default_xp_and_weight" classname="TestMonsterFactory" time="0.000">
+		</testcase>
+		<testcase name="test_build_respects_custom_xp_and_weight" classname="TestMonsterFactory" time="0.007">
+		</testcase>
+		<testcase name="test_build_stats_sets_all_fields" classname="TestMonsterFactory" time="0.007">
+		</testcase>
+		<testcase name="test_factory_accepts_custom_rng" classname="TestMonsterFactory" time="0.007">
+		</testcase>
+		<testcase name="test_built_config_can_create_monster_instance" classname="TestMonsterFactory" time="0.005">
+		</testcase>
+	</testsuite>
+	<testsuite id="1" name="TestMonsterAI" package="tests/engine/entities" timestamp="2026-03-06T15:05:41" hostname="localhost" tests="5" failures="0" errors="0" skipped="0" flaky="0" time="0.034">
+		<testcase name="test_choose_action_returns_valid_index" classname="TestMonsterAI" time="0.003">
+		</testcase>
+		<testcase name="test_choose_action_returns_minus_one_with_no_moves" classname="TestMonsterAI" time="0.006">
+		</testcase>
+		<testcase name="test_choose_action_with_one_move_always_returns_zero" classname="TestMonsterAI" time="0.007">
+		</testcase>
+		<testcase name="test_choose_action_returns_minus_one_with_null_config" classname="TestMonsterAI" time="0.008">
+		</testcase>
+		<testcase name="test_choose_action_produces_distribution_across_moves" classname="TestMonsterAI" time="0.006">
+		</testcase>
+	</testsuite>
+	<testsuite id="2" name="TestMonsterInstance" package="tests/engine/entities" timestamp="2026-03-06T15:05:41" hostname="localhost" tests="13" failures="0" errors="0" skipped="0" flaky="0" time="0.090">
+		<testcase name="test_stat_block_serialize_round_trip" classname="TestMonsterInstance" time="0.001">
+		</testcase>
+		<testcase name="test_stat_block_deserialize_uses_defaults_for_missing_keys" classname="TestMonsterInstance" time="0.008">
+		</testcase>
+		<testcase name="test_create_sets_current_hp_to_max" classname="TestMonsterInstance" time="0.006">
+		</testcase>
+		<testcase name="test_level_affects_max_hp" classname="TestMonsterInstance" time="0.008">
+		</testcase>
+		<testcase name="test_apply_damage_reduces_current_hp" classname="TestMonsterInstance" time="0.006">
+		</testcase>
+		<testcase name="test_apply_damage_clamps_to_zero" classname="TestMonsterInstance" time="0.007">
+		</testcase>
+		<testcase name="test_apply_zero_damage_has_no_effect" classname="TestMonsterInstance" time="0.006">
+		</testcase>
+		<testcase name="test_restore_hp_heals_partial_amount" classname="TestMonsterInstance" time="0.006">
+		</testcase>
+		<testcase name="test_restore_hp_clamps_to_max" classname="TestMonsterInstance" time="0.008">
+		</testcase>
+		<testcase name="test_is_fainted_false_when_hp_above_zero" classname="TestMonsterInstance" time="0.006">
+		</testcase>
+		<testcase name="test_is_fainted_true_at_exactly_zero_hp" classname="TestMonsterInstance" time="0.008">
+		</testcase>
+		<testcase name="test_serialize_round_trip_preserves_level_and_hp" classname="TestMonsterInstance" time="0.006">
+		</testcase>
+		<testcase name="test_serialize_includes_config_id" classname="TestMonsterInstance" time="0.008">
+		</testcase>
+	</testsuite>
+	<testsuite id="3" name="TestConfigLoading" package="tests/engine/entities" timestamp="2026-03-06T15:05:41" hostname="localhost" tests="10" failures="0" errors="0" skipped="0" flaky="0" time="0.069">
+		<testcase name="test_load_fire_lizard_returns_non_null" classname="TestConfigLoading" time="0.003">
+		</testcase>
+		<testcase name="test_fire_lizard_has_correct_id_and_name" classname="TestConfigLoading" time="0.007">
+		</testcase>
+		<testcase name="test_fire_lizard_has_fire_type" classname="TestConfigLoading" time="0.006">
+		</testcase>
+		<testcase name="test_fire_lizard_has_base_stats" classname="TestConfigLoading" time="0.005">
+		</testcase>
+		<testcase name="test_fire_lizard_has_move_ids" classname="TestConfigLoading" time="0.008">
+		</testcase>
+		<testcase name="test_load_stone_golem_returns_non_null" classname="TestConfigLoading" time="0.006">
+		</testcase>
+		<testcase name="test_stone_golem_has_correct_id_and_name" classname="TestConfigLoading" time="0.007">
+		</testcase>
+		<testcase name="test_stone_golem_has_earth_type" classname="TestConfigLoading" time="0.007">
+		</testcase>
+		<testcase name="test_stone_golem_has_higher_hp_than_fire_lizard" classname="TestConfigLoading" time="0.007">
+		</testcase>
+		<testcase name="test_loaded_config_can_create_monster_instance" classname="TestConfigLoading" time="0.007">
+		</testcase>
+	</testsuite>
+</testsuites>

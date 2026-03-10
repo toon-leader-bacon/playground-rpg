@@ -14,10 +14,18 @@ config/name="PlaygroundRPG"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 
-[physics]
+[autoload]
 
-3d/physics_engine="Jolt Physics"
+EventBus="*res://engine/core/EventBus.gd"
+GameState="*res://engine/core/GameState.gd"
+ConfigLoader="*res://engine/core/ConfigLoader.gd"
+BattleManager="*res://engine/core/BattleManager.gd"
+WorldManager="*res://engine/core/WorldManager.gd"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/gdUnit4/plugin.cfg")
 
 [rendering]
 
-rendering_device/driver.windows="d3d12"
+renderer/rendering_method="gl_compatibility"
