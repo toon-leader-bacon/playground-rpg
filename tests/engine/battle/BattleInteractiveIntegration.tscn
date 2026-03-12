@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://battle_interactive_integration"]
+
+[ext_resource type="Script" path="res://tests/engine/battle/BattleInteractiveIntegration.gd" id="1_bintg2"]
+
+[node name="BattleInteractiveIntegration" type="Node"]
+script = ExtResource("1_bintg2")

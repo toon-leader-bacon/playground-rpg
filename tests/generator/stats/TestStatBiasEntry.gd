@@ -53,7 +53,7 @@ func test_negative_rank_minus1_resolves_to_lowest_in_build_authored() -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 12345
 	var factory := StatBlockFactory.new(rng)
-	var biases: Dictionary = {StatName.SPEED: StatBiasEntry.new(1.0, -1)}
+	var biases: Dictionary[String, StatBiasEntry] = {StatName.SPEED: StatBiasEntry.new(1.0, -1)}
 
 	var block: GenericStatBlock = factory.build_authored(StatProfiles.POKEMON, 300.0, biases, 0.10)
 
@@ -68,7 +68,7 @@ func test_negative_rank_minus2_resolves_to_second_lowest_in_build_authored() -> 
 	rng.seed = 99999
 	var factory := StatBlockFactory.new(rng)
 	# SPEED rank=-1 (lowest), DEFENSE rank=-2 (second lowest)
-	var biases: Dictionary = {
+	var biases: Dictionary[String, StatBiasEntry] = {
 		StatName.SPEED: StatBiasEntry.new(1.0, -1),
 		StatName.DEFENSE: StatBiasEntry.new(1.0, -2),
 	}

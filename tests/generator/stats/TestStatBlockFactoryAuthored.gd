@@ -7,7 +7,7 @@ func test_sum_equals_total_points_with_weight_biases() -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 42
 	var factory := StatBlockFactory.new(rng)
-	var biases: Dictionary = {
+	var biases: Dictionary[String, StatBiasEntry] = {
 		StatName.ATTACK: StatBiasEntry.new(3.0),
 		StatName.SPEED: StatBiasEntry.new(0.5),
 	}
@@ -24,7 +24,7 @@ func test_sum_equals_total_points_with_rank_biases() -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 55
 	var factory := StatBlockFactory.new(rng)
-	var biases: Dictionary = {
+	var biases: Dictionary[String, StatBiasEntry] = {
 		StatName.HP: StatBiasEntry.new(1.0, 1),
 		StatName.SPEED: StatBiasEntry.new(1.0, -1),
 	}
@@ -44,7 +44,7 @@ func test_high_weight_stat_larger_than_low_weight_stat() -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 777
 	var factory := StatBlockFactory.new(rng)
-	var biases: Dictionary = {
+	var biases: Dictionary[String, StatBiasEntry] = {
 		StatName.ATTACK: StatBiasEntry.new(4.0),   # heavily weighted
 		StatName.SPEED: StatBiasEntry.new(0.25),    # very lightly weighted
 	}
@@ -62,7 +62,7 @@ func test_rank_1_stat_is_highest() -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 1234
 	var factory := StatBlockFactory.new(rng)
-	var biases: Dictionary = {StatName.ATTACK: StatBiasEntry.new(1.0, 1)}
+	var biases: Dictionary[String, StatBiasEntry] = {StatName.ATTACK: StatBiasEntry.new(1.0, 1)}
 
 	var block: GenericStatBlock = factory.build_authored(StatProfiles.POKEMON, 300.0, biases)
 
@@ -77,7 +77,7 @@ func test_rank_neg1_stat_is_lowest() -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 9999
 	var factory := StatBlockFactory.new(rng)
-	var biases: Dictionary = {StatName.SPEED: StatBiasEntry.new(1.0, -1)}
+	var biases: Dictionary[String, StatBiasEntry] = {StatName.SPEED: StatBiasEntry.new(1.0, -1)}
 
 	var block: GenericStatBlock = factory.build_authored(StatProfiles.POKEMON, 300.0, biases)
 
@@ -96,7 +96,7 @@ func test_min_val_respected_before_scaling() -> void:
 	var factory := StatBlockFactory.new(rng)
 	# HP weight=5 → mean ≈ (5/10)*300=150; min_val=20 should never bind here,
 	# but we verify the final value stays >= 20 regardless of scaling.
-	var biases: Dictionary = {StatName.HP: StatBiasEntry.new(5.0, 0, 20.0)}
+	var biases: Dictionary[String, StatBiasEntry] = {StatName.HP: StatBiasEntry.new(5.0, 0, 20.0)}
 
 	var block: GenericStatBlock = factory.build_authored(
 		StatProfiles.POKEMON, 300.0, biases, 0.05
@@ -111,7 +111,7 @@ func test_max_val_respected_in_final_output() -> void:
 	rng.seed = 567
 	var factory := StatBlockFactory.new(rng)
 	# cap ATTACK at 30; with total=300 and 6 stats, natural ATTACK would be ~120+.
-	var biases: Dictionary = {StatName.ATTACK: StatBiasEntry.new(5.0, 0, -INF, 30.0)}
+	var biases: Dictionary[String, StatBiasEntry] = {StatName.ATTACK: StatBiasEntry.new(5.0, 0, -INF, 30.0)}
 
 	var block: GenericStatBlock = factory.build_authored(
 		StatProfiles.POKEMON, 300.0, biases, 0.02
@@ -126,7 +126,7 @@ func test_max_val_slack_redistributed_to_unconstrained_stats() -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 888
 	var factory := StatBlockFactory.new(rng)
-	var biases: Dictionary = {StatName.ATTACK: StatBiasEntry.new(5.0, 0, -INF, 25.0)}
+	var biases: Dictionary[String, StatBiasEntry] = {StatName.ATTACK: StatBiasEntry.new(5.0, 0, -INF, 25.0)}
 
 	var block: GenericStatBlock = factory.build_authored(
 		StatProfiles.POKEMON, 300.0, biases, 0.02
@@ -145,7 +145,7 @@ func test_seeded_rng_is_deterministic() -> void:
 	rng_a.seed = 31415
 	var rng_b := RandomNumberGenerator.new()
 	rng_b.seed = 31415
-	var biases: Dictionary = {
+	var biases: Dictionary[String, StatBiasEntry] = {
 		StatName.ATTACK: StatBiasEntry.new(2.0, 1),
 		StatName.SPEED: StatBiasEntry.new(0.5, -1),
 	}
@@ -193,9 +193,9 @@ func test_add_random_accent_adds_one_stat_from_candidates() -> void:
 	rng.seed = 42
 	var factory := StatBlockFactory.new(rng)
 	var candidates: Array[String] = [StatName.HP, StatName.ATTACK, StatName.MAGIC]
-	var base: Dictionary = {}
+	var base: Dictionary[String, StatBiasEntry] = {}
 
-	var result: Dictionary = factory.add_random_accent(base, candidates, 1.8)
+	var result: Dictionary[String, StatBiasEntry] = factory.add_random_accent(base, candidates, 1.8)
 
 	# Exactly one candidate should appear in the result.
 	var hits: int = 0
@@ -206,14 +206,14 @@ func test_add_random_accent_adds_one_stat_from_candidates() -> void:
 	# The added entry must have the specified weight.
 	for c in candidates:
 		if result.has(c):
-			assert_float((result[c] as StatBiasEntry).weight).is_equal_approx(1.8, 0.0001)
+			assert_float(result[c].weight).is_equal_approx(1.8, 0.0001)
 
 
 func test_add_random_accent_does_not_modify_base_dict() -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 7
 	var factory := StatBlockFactory.new(rng)
-	var base: Dictionary = {StatName.SPEED: StatBiasEntry.new(0.3, -1)}
+	var base: Dictionary[String, StatBiasEntry] = {StatName.SPEED: StatBiasEntry.new(0.3, -1)}
 	var base_size_before: int = base.size()
 
 	factory.add_random_accent(base, [StatName.HP, StatName.ATTACK])
@@ -223,10 +223,10 @@ func test_add_random_accent_does_not_modify_base_dict() -> void:
 
 func test_add_random_accent_empty_candidates_returns_copy() -> void:
 	var factory := StatBlockFactory.new()
-	var base: Dictionary = {StatName.HP: StatBiasEntry.new(2.0)}
+	var base: Dictionary[String, StatBiasEntry] = {StatName.HP: StatBiasEntry.new(2.0)}
 	var candidates: Array[String] = []
 
-	var result: Dictionary = factory.add_random_accent(base, candidates)
+	var result: Dictionary[String, StatBiasEntry] = factory.add_random_accent(base, candidates)
 
 	assert_int(result.size()).is_equal(1)
 	assert_bool(result.has(StatName.HP)).is_true()
@@ -237,8 +237,8 @@ func test_add_random_accent_accent_stat_used_in_build_authored() -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 2025
 	var factory := StatBlockFactory.new(rng)
-	var base: Dictionary = {StatName.SPEED: StatBiasEntry.new(0.3, -1)}
-	var accented: Dictionary = factory.add_random_accent(
+	var base: Dictionary[String, StatBiasEntry] = {StatName.SPEED: StatBiasEntry.new(0.3, -1)}
+	var accented: Dictionary[String, StatBiasEntry] = factory.add_random_accent(
 		base, [StatName.HP, StatName.ATTACK, StatName.SPECIAL_ATTACK], 2.0
 	)
 

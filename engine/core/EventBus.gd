@@ -11,3 +11,5 @@ signal battle_hp_restored(target_name: String, amount: int, new_hp: int, max_hp:
 signal battle_stat_changed(target_name: String, stat: String, delta: int, total_stage: int)
 signal battle_monster_fainted(monster_name: String)
 signal battle_ended(winner_name: String, loser_name: String, turn_count: int)
+signal battle_waiting_for_input(actor_id: String, available_moves: Array)
+signal battle_combatants_initialized(player_name: String, player_max_hp: int, enemy_name: String, enemy_max_hp: int)

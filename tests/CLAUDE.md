@@ -9,7 +9,8 @@ GDUnit4. Every test file extends `GdUnitTestSuite`. Test functions are prefixed 
 Run the full suite headlessly with:
 
 ```bash
-godot --headless --path . -s addons/gdUnit4/bin/GdUnit4CmdTool.gd --add res://tests
+godot --headless --import
+godot --headless -s addons/gdUnit4/bin/GdUnitCmdTool.gd --ignoreHeadlessMode --add "res://tests/"
 ```
 
 ## Required Tests Per Mechanic

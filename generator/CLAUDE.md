@@ -10,6 +10,12 @@ Examples:
 
 ---
 
+## Engine CLI
+
+The generator is operable as a standalone headless CLI. Recipes encode specific, named generation configurations. The CLI is intentionally simple: `--recipe`, `--count`, `--seed`, `--out-dir`. The recipe layer (not the CLI) is where design intent lives. This CLI tool is for developer iteration, not end-user interaction.
+
+---
+
 ## Project Structure
 
 - The `generator/` dir contains folders for developing configurations/ content that will be loaded into the engine.
@@ -35,10 +41,10 @@ res://
 │  ├── maps/
 │  └── etc.../
 └── schema/            # Generator may import from schema. Schema must not import from generator
-	├── battle/
-	├── monsters/
-	├── world/
-	└── moves/
+    ├── battle/
+    ├── monsters/
+    ├── world/
+    └── moves/
 ```
 
 ---
@@ -52,7 +58,7 @@ res://
 
 ```gdscript
 func _init(rng: RandomNumberGenerator = null) -> void:
-	self.rng = rng if rng != null else RandomNumberGenerator.new()
+    self.rng = rng if rng != null else RandomNumberGenerator.new()
 ```
 
 - Avoid hard coding values, prefer to make things configurable/ dynamic

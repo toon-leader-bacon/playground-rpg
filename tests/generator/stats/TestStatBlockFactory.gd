@@ -56,7 +56,7 @@ func test_build_from_values_preserves_order() -> void:
 
 func test_build_from_dict_sets_all_entries() -> void:
 	var factory := StatBlockFactory.new()
-	var values: Dictionary = {
+	var values: Dictionary[String, float] = {
 		StatName.STRENGTH: 30.0,
 		StatName.MAGIC: 15.0,
 		StatName.SPEED: 25.0,
@@ -108,7 +108,7 @@ func test_build_random_ranged_respects_per_stat_ranges() -> void:
 
 	# Step 2: set up inputs
 	var factory := StatBlockFactory.new(rng)
-	var ranges: Dictionary = {
+	var ranges: Dictionary[String, Array] = {
 		StatName.HP: [100.0, 200.0],
 		StatName.ATTACK: [5.0, 10.0],
 	}

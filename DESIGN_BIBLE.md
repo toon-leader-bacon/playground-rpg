@@ -55,8 +55,9 @@ These are the known "dials" the engine must support. Each is a toggleable/tunabl
 The MVP must prove the architecture works, not deliver a complete game. Success means:
 
 - [ ] At least **2 zones** exist, each with distinct enemy pools and visual identity
-- [ ] At least **2 combat system modes** are implemented and swappable via config (e.g., standard 1v1 and ATB 1v1)
-- [ ] A monster can be **fully defined by a `.tres` config** (stats, moves, type, encounter weight)
+- [1] At least **2 combat system modes** are implemented and swappable via config (e.g., standard 1v1 and ATB 1v1) (PARTIALLY COMPLETED)
+- [x] A monster can be **fully defined by a `.tres` config** (stats, moves, type, encounter weight)
+- [1] A monster `.tres` can be **fully generated** (PARTIALLY COMPLETED)
 - [ ] A map zone can be **fully defined by config** (tileset, encounter table, connections to other zones)
 - [ ] The player can: enter a zone, trigger an encounter, battle, win/lose, return to the world, reach a simple end condition
 - [ ] Game state can be **saved and loaded** via serialization of the Model layer

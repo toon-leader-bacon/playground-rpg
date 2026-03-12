@@ -111,12 +111,14 @@ script = ExtResource("1_id")
 
 ### Headless class cache
 
-Any time you add a new class_name script, run godot --headless --import once before running .tscn files directly. gdUnit4 tests work without this; scene runs need the cache.
+After adding a script with class_name, run:
+`/Applications/Godot.app/Contents/MacOS/godot --headless --import`
+Without this, tests referencing the new type may fail with "type not found", even if the script is correct.
 
-### Running tests headlessly
+### Running tests heedlessly
 
 ```bash
-/Applications/Godot.app/Contents/MacOS/Godot --headless -s addons/gdUnit4/bin/GdUnitCmdTool.gd --ignoreHeadlessMode --add "res://tests/"
+godot --headless -s addons/gdUnit4/bin/GdUnitCmdTool.gd --ignoreHeadlessMode --add "res://tests/"
 ```
 
 Use `--add "res://tests/path/to/TestFile.gd"` to run a single suite.

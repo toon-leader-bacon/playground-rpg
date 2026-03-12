@@ -22,18 +22,18 @@ extends RefCounted
 ##
 ##   # Swamp zone: all creatures are defense-heavy and slow.
 ##   # Each creature also randomly excels at HP, ATTACK, or MAGIC.
-##   var swamp_base: Dictionary = {
+##   var swamp_base: Dictionary[String, StatBiasEntry] = {
 ##       StatName.DEFENSE: StatArchetypes._b(2.5, 1),   # always highest stat
 ##       StatName.SPEED:   StatArchetypes._b(0.3, -1),  # always lowest stat
 ##   }
-##   var biases: Dictionary = factory.add_random_accent(
+##   var biases: Dictionary[String, StatBiasEntry] = factory.add_random_accent(
 ##       swamp_base, [StatName.HP, StatName.ATTACK, StatName.MAGIC], 1.5
 ##   )
 ##   var stats: GenericStatBlock = factory.build_authored(StatProfiles.POKEMON, 300.0, biases)
 ##
 ##   # Swamp boss twist: unusually fast for the zone, defense still dominant,
 ##   # tighter variance so the boss stats feel more intentional.
-##   var boss_biases: Dictionary = {
+##   var boss_biases: Dictionary[String, StatBiasEntry] = {
 ##       StatName.DEFENSE: StatArchetypes._b(3.0, 1),
 ##       StatName.SPEED:   StatArchetypes._b(2.0, 2),  # fast, but not the highest stat
 ##   }
@@ -43,7 +43,7 @@ extends RefCounted
 
 
 ## Tough, slow creature: highest HP, second-highest defense, lowest speed.
-static func tank() -> Dictionary:
+static func tank() -> Dictionary[String, StatBiasEntry]:
 	return {
 		StatName.HP: _b(2.0, 1),
 		StatName.DEFENSE: _b(2.0, 2),
@@ -52,7 +52,7 @@ static func tank() -> Dictionary:
 
 
 ## Fragile, powerful attacker: highest attack, lowest defense, below-average HP.
-static func glass_cannon() -> Dictionary:
+static func glass_cannon() -> Dictionary[String, StatBiasEntry]:
 	return {
 		StatName.ATTACK: _b(3.0, 1),
 		StatName.DEFENSE: _b(0.3, -1),
@@ -61,7 +61,7 @@ static func glass_cannon() -> Dictionary:
 
 
 ## Fast damage dealer: highest speed, second-highest attack, lowest defense.
-static func speedster() -> Dictionary:
+static func speedster() -> Dictionary[String, StatBiasEntry]:
 	return {
 		StatName.SPEED: _b(2.5, 1),
 		StatName.ATTACK: _b(1.2, 2),
@@ -70,7 +70,7 @@ static func speedster() -> Dictionary:
 
 
 ## Magical support: highest magic defense, second-highest spirit, lowest attack.
-static func support() -> Dictionary:
+static func support() -> Dictionary[String, StatBiasEntry]:
 	return {
 		StatName.MAGIC_DEFENSE: _b(2.0, 1),
 		StatName.SPIRIT: _b(1.8, 2),
@@ -79,7 +79,7 @@ static func support() -> Dictionary:
 
 
 ## No bias — purely Gaussian distribution. Equivalent to build_gaussian_total.
-static func balanced() -> Dictionary:
+static func balanced() -> Dictionary[String, StatBiasEntry]:
 	return {}
 
 

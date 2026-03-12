@@ -10,6 +10,7 @@ This file describes the game engine architecture, and instructions for inter-fil
 - **All inter-system communication goes through `EventBus`.** Never hold a direct reference to another system's node if that communication can be expressed as a signal. Direct references are acceptable within the same scene/subsystem.
 - **Do not call `load()` or `ResourceLoader.load()` directly anywhere.** All resource loading goes through `ConfigLoader`.
 - **Do not use `get_node()` with long absolute paths.** Use `@onready var` with relative paths or signals.
+- **After adding any script with `class_name`, run `godot --headless --import` before running tests or scenes.** The global class script cache is not updated automatically; skipping this step produces misleading "type not found" errors.
 
 ---
 

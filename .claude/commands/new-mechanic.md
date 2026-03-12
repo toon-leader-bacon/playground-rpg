@@ -67,7 +67,7 @@ Place integration scenes in `tests/engine/<domain>/` alongside unit tests.
 Before reporting back, run the full test suite headlessly and confirm 0 failures:
 
 ```bash
-/Applications/Godot.app/Contents/MacOS/Godot --headless -s addons/gdUnit4/bin/GdUnitCmdTool.gd --ignoreHeadlessMode --add "res://tests/"
+godot --headless -s addons/gdUnit4/bin/GdUnitCmdTool.gd --ignoreHeadlessMode --add "res://tests/"
 ```
 
 Do not report complete if tests are failing.

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="GenericStatBlock" format=3]
+
+[ext_resource type="Script" path="res://schema/stats/GenericStatBlock.gd" id="1_khxqq"]
+
+[resource]
+script = ExtResource("1_khxqq")
+stats = {
+"agility": 140.10864657102093,
+"hp": 23.17758605697967,
+"luck": 101.46041364976098,
+"magic": 164.95266258205658,
+"mp": 6.76072876048996,
+"spirit": 6.76072876048996,
+"strength": 139.05244263577902,
+"vitality": 17.726790983423005
+}

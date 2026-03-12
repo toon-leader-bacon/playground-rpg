@@ -46,10 +46,10 @@ func build_from_values(stat_names: Array[String], values: Array[float]) -> Gener
 
 ## Returns a GenericStatBlock from an explicit { stat_name: value } dictionary.
 ## Convenient for hand-authored blocks with named keys (e.g. boss stat overrides).
-func build_from_dict(values: Dictionary) -> GenericStatBlock:
+func build_from_dict(values: Dictionary[String, float]) -> GenericStatBlock:
 	var block := GenericStatBlock.new()
-	for key in values.keys():
-		block.stats[str(key)] = float(values[key])
+	for key: String in values.keys():
+		block.stats[key] = values[key]
 	return block
 
 
@@ -67,11 +67,11 @@ func build_random(stat_names: Array[String], min_val: float, max_val: float) -> 
 ## ranges_dict maps stat_name (String) -> [min_val, max_val] (Array of two floats).
 ## No sum guarantee. Useful for fixed-range loot tables or hand-tuned stat
 ## bands where each stat is designed independently.
-func build_random_ranged(ranges_dict: Dictionary) -> GenericStatBlock:
+func build_random_ranged(ranges_dict: Dictionary[String, Array]) -> GenericStatBlock:
 	var block := GenericStatBlock.new()
-	for stat_name in ranges_dict.keys():
+	for stat_name: String in ranges_dict.keys():
 		var range_arr: Array = ranges_dict[stat_name]
-		block.stats[str(stat_name)] = rng.randf_range(float(range_arr[0]), float(range_arr[1]))
+		block.stats[stat_name] = rng.randf_range(float(range_arr[0]), float(range_arr[1]))
 	return block
 
 
@@ -172,19 +172,19 @@ func build_gaussian_total(
 ## --- Usage example: swamp zone ---
 ##
 ##   # Shared base: defense-heavy, always slowest.
-##   var swamp_base: Dictionary = {
+##   var swamp_base: Dictionary[String, StatBiasEntry] = {
 ##       StatName.DEFENSE: StatBiasEntry.new(2.5, 1),   # always highest
 ##       StatName.SPEED:   StatBiasEntry.new(0.3, -1),  # always lowest
 ##   }
 ##
 ##   # Per-creature accent: one random secondary specialty per monster.
-##   var biases: Dictionary = factory.add_random_accent(
+##   var biases: Dictionary[String, StatBiasEntry] = factory.add_random_accent(
 ##       swamp_base, [StatName.HP, StatName.ATTACK, StatName.MAGIC], 1.5
 ##   )
 ##   var stats: GenericStatBlock = factory.build_authored(StatProfiles.POKEMON, 300.0, biases)
 ##
 ##   # Zone boss: defense still dominant, unusually fast for the zone, tighter variance.
-##   var boss_biases: Dictionary = {
+##   var boss_biases: Dictionary[String, StatBiasEntry] = {
 ##       StatName.DEFENSE: StatBiasEntry.new(3.0, 1),
 ##       StatName.SPEED:   StatBiasEntry.new(2.0, 2),   # rank=2: fast but not highest
 ##   }
@@ -197,7 +197,7 @@ func build_gaussian_total(
 func build_authored(
 	stat_names: Array[String],
 	total_points: float,
-	biases: Dictionary = {},
+	biases: Dictionary[String, StatBiasEntry] = {},
 	std_dev_factor: float = 0.10,
 	min_per_stat: float = 0.0
 ) -> GenericStatBlock:
@@ -207,8 +207,8 @@ func build_authored(
 
 	# Step 1: Validate and resolve ranks.
 	# bias_data mirrors biases but with rank already resolved to an absolute position [1,n].
-	var bias_data: Dictionary = {}  # stat_name -> {weight, rank, min_val, max_val, std_dev_factor}
-	var seen_ranks: Dictionary = {}  # resolved_rank(int) -> stat_name(String)
+	var bias_data: Dictionary[String, StatBiasEntry] = {}
+	var seen_ranks: Dictionary[int, String] = {}
 
 	for key in biases.keys():
 		var stat_name: String = str(key)
@@ -216,13 +216,9 @@ func build_authored(
 		var resolved_rank: int = bias.rank
 		if bias.rank < 0:
 			resolved_rank = clampi(n + bias.rank + 1, 1, n)
-		bias_data[stat_name] = {
-			"weight": bias.weight,
-			"rank": resolved_rank,
-			"min_val": bias.min_val,
-			"max_val": bias.max_val,
-			"std_dev_factor": bias.std_dev_factor,
-		}
+		bias_data[stat_name] = StatBiasEntry.new(
+			bias.weight, resolved_rank, bias.min_val, bias.max_val, bias.std_dev_factor
+		)
 		if resolved_rank > 0:
 			if seen_ranks.has(resolved_rank):
 				push_error(
@@ -230,32 +226,32 @@ func build_authored(
 						resolved_rank, stat_name, seen_ranks[resolved_rank]
 					]
 				)
-				bias_data[stat_name]["rank"] = 0
+				bias_data[stat_name].rank = 0
 			else:
 				seen_ranks[resolved_rank] = stat_name
 
 	# Step 2: Compute total weight for proportional mean assignment.
 	var total_weight: float = 0.0
-	for stat_name in stat_names:
-		total_weight += float(bias_data[stat_name]["weight"]) if bias_data.has(stat_name) else 1.0
+	for stat_name: String in stat_names:
+		total_weight += bias_data[stat_name].weight if bias_data.has(stat_name) else 1.0
 
 	# Step 3 & 4: Sample from Gaussian and apply per-stat absolute bounds.
 	var raw: Array[float] = []
-	for stat_name in stat_names:
+	for stat_name: String in stat_names:
 		var b_weight: float = 1.0
 		var b_sdf: float = std_dev_factor
 		var eff_min: float = min_per_stat
 		var eff_max: float = INF
 
 		if bias_data.has(stat_name):
-			var b: Dictionary = bias_data[stat_name]
-			b_weight = float(b["weight"])
-			if float(b["std_dev_factor"]) >= 0.0:
-				b_sdf = float(b["std_dev_factor"])
-			if is_finite(float(b["min_val"])):
-				eff_min = maxf(min_per_stat, float(b["min_val"]))
-			if is_finite(float(b["max_val"])):
-				eff_max = float(b["max_val"])
+			var b: StatBiasEntry = bias_data[stat_name]
+			b_weight = b.weight
+			if b.std_dev_factor >= 0.0:
+				b_sdf = b.std_dev_factor
+			if is_finite(b.min_val):
+				eff_min = maxf(min_per_stat, b.min_val)
+			if is_finite(b.max_val):
+				eff_max = b.max_val
 
 		var mean: float = (b_weight / total_weight) * total_points
 		var dev: float = b_sdf * total_points
@@ -268,8 +264,8 @@ func build_authored(
 	# Step 5: Apply rank ordering.
 	# Skip entirely when no rank constraints — preserves exact RNG parity with build_gaussian_total.
 	var has_ranks: bool = false
-	for stat_name in bias_data.keys():
-		if int(bias_data[stat_name]["rank"]) > 0:
+	for stat_name: String in bias_data.keys():
+		if bias_data[stat_name].rank > 0:
 			has_ranks = true
 			break
 
@@ -280,12 +276,12 @@ func build_authored(
 		sorted_values.reverse()  # descending: index 0 = highest
 
 		# Map each ranked stat to its claimed sorted position.
-		var claimed: Dictionary = {}     # position(int) -> stat_index(int)
-		var stat_pos: Dictionary = {}    # stat_index(int) -> position(int)
-		for i in range(n):
+		var claimed: Dictionary[int, int] = {}   # position -> stat_index
+		var stat_pos: Dictionary[int, int] = {}  # stat_index -> position
+		for i: int in range(n):
 			var stat_name: String = stat_names[i]
 			if bias_data.has(stat_name):
-				var r: int = int(bias_data[stat_name]["rank"])
+				var r: int = bias_data[stat_name].rank
 				if r > 0 and r <= n:
 					var pos: int = r - 1
 					claimed[pos] = i
@@ -293,12 +289,12 @@ func build_authored(
 
 		# Collect free positions for random assignment to unranked stats.
 		var free_positions: Array[int] = []
-		for pos in range(n):
+		for pos: int in range(n):
 			if not claimed.has(pos):
 				free_positions.append(pos)
 
 		# Fisher-Yates shuffle of free positions.
-		for i in range(free_positions.size() - 1, 0, -1):
+		for i: int in range(free_positions.size() - 1, 0, -1):
 			var j: int = rng.randi_range(0, i)
 			var tmp: int = free_positions[i]
 			free_positions[i] = free_positions[j]
@@ -306,7 +302,7 @@ func build_authored(
 
 		reordered.resize(n)
 		var free_idx: int = 0
-		for i in range(n):
+		for i: int in range(n):
 			if stat_pos.has(i):
 				reordered[i] = sorted_values[int(stat_pos[i])]
 			else:
@@ -324,16 +320,16 @@ func build_authored(
 		for v: float in reordered:
 			final_values.append(v * scale)
 	else:
-		for _i in range(n):
+		for _i: int in range(n):
 			final_values.append(total_points / float(n))
 
 	# Post-scaling: re-clamp authored max_val; redistribute slack to unconstrained stats.
 	var slack: float = 0.0
 	var unconstrained_indices: Array[int] = []
-	for i in range(n):
+	for i: int in range(n):
 		var stat_name: String = stat_names[i]
-		if bias_data.has(stat_name) and is_finite(float(bias_data[stat_name]["max_val"])):
-			var cap: float = float(bias_data[stat_name]["max_val"])
+		if bias_data.has(stat_name) and is_finite(bias_data[stat_name].max_val):
+			var cap: float = bias_data[stat_name].max_val
 			if final_values[i] > cap:
 				slack += final_values[i] - cap
 				final_values[i] = cap
@@ -342,7 +338,7 @@ func build_authored(
 
 	if slack > 0.0 and unconstrained_indices.size() > 0:
 		var per_stat: float = slack / float(unconstrained_indices.size())
-		for i in unconstrained_indices:
+		for i: int in unconstrained_indices:
 			final_values[i] += per_stat
 
 	return build_from_values(stat_names, final_values)
@@ -356,7 +352,7 @@ func build_authored(
 ## then call add_random_accent once per creature to give each one a unique secondary
 ## strength drawn from a curated pool. Combine with build_authored() immediately after:
 ##
-##   var biases: Dictionary = factory.add_random_accent(
+##   var biases: Dictionary[String, StatBiasEntry] = factory.add_random_accent(
 ##       StatArchetypes.tank(), [StatName.MAGIC, StatName.ATTACK], 1.8
 ##   )
 ##   var block: GenericStatBlock = factory.build_authored(StatProfiles.POKEMON, 300.0, biases)
@@ -365,11 +361,13 @@ func build_authored(
 ## If the chosen stat already exists in base_biases, its entry is replaced entirely
 ## (weight is set to accent_weight, all other fields reset to defaults).
 func add_random_accent(
-	base_biases: Dictionary,
+	base_biases: Dictionary[String, StatBiasEntry],
 	candidate_stats: Array[String],
 	accent_weight: float = 1.5
-) -> Dictionary:
-	var result: Dictionary = base_biases.duplicate()
+) -> Dictionary[String, StatBiasEntry]:
+	var result: Dictionary[String, StatBiasEntry] = {}
+	for key: String in base_biases.keys():
+		result[key] = base_biases[key]
 	if candidate_stats.is_empty():
 		return result
 	var idx: int = rng.randi_range(0, candidate_stats.size() - 1)
