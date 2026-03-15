@@ -8,6 +8,8 @@ const _TurnBased1v1 := preload("res://engine/battle/controller/TurnBased1v1.gd")
 const _TurnBased1v1Controller := preload("res://engine/battle/controller/TurnBased1v1Controller.gd")
 const _TurnBased2v2Controller := preload("res://engine/battle/controller/TurnBased2v2Controller.gd")
 const _TurnBasedNvMController := preload("res://engine/battle/controller/TurnBasedNvMController.gd")
+const _ATBNvMController := preload("res://engine/battle/controller/ATBNvMController.gd")
+const _ATBTickDriver := preload("res://engine/battle/controller/ATBTickDriver.gd")
 
 enum CombatStyle {
 	TURN_BASED_1V1,
@@ -15,12 +17,13 @@ enum CombatStyle {
 	TURN_BASED_1V1_INTERACTIVE,
 	TURN_BASED_2V2_INTERACTIVE,
 	TURN_BASED_NVM_INTERACTIVE,
-	# Future: ATB_NVN
+	ATB_NVM_INTERACTIVE,
 }
 
 var _active_battle: Object
 var _active_player: MonsterInstance
 var _active_enemy: MonsterInstance
+var _atb_tick_driver: Node
 
 
 ## Start a battle of the given style.
@@ -41,6 +44,8 @@ func start_battle(style: CombatStyle, combatants: Array) -> void:
 			_start_turn_based_2v2_interactive(combatants)
 		CombatStyle.TURN_BASED_NVM_INTERACTIVE:
 			_start_turn_based_nvm_interactive(combatants)
+		CombatStyle.ATB_NVM_INTERACTIVE:
+			_start_atb_nvm_interactive(combatants)
 
 
 ## Called by UI or scene to forward the player's move choice into the active battle.
@@ -353,6 +358,102 @@ func _on_battle_ended_nvm_interactive(winner_id: String, turn_count: int) -> voi
 		winner_name = "(draw)"
 		loser_name = "(draw)"
 	EventBus.battle_ended.emit(winner_name, loser_name, turn_count)
+	_active_battle = null
+
+
+func _start_atb_nvm_interactive(combatants: Array) -> void:
+	assert(combatants.size() == 2, "ATB_NVM_INTERACTIVE requires combatants = [player_team_array, enemy_team_array]")
+	var player_team: Array[MonsterInstance] = []
+	for m in combatants[0] as Array:
+		player_team.append(m as MonsterInstance)
+	var enemy_team: Array[MonsterInstance] = []
+	for m in combatants[1] as Array:
+		enemy_team.append(m as MonsterInstance)
+	assert(player_team.size() > 0, "Player team must not be empty")
+	assert(enemy_team.size() > 0, "Enemy team must not be empty")
+
+	var move_library: Dictionary[String, MoveConfig] = _build_move_library(player_team + enemy_team)
+
+	var battle: Object = _ATBNvMController.new()
+	_active_battle = battle
+
+	battle.connect("combatants_initialized",
+		func(p_names: Array[String], p_hps: Array[int], e_names: Array[String], e_hps: Array[int]) -> void:
+			EventBus.battle_nvm_initialized.emit(p_names, p_hps, e_names, e_hps)
+	)
+	battle.connect("actor_ready",
+		func(actor_id: String) -> void:
+			EventBus.battle_action_started.emit(actor_id)
+	)
+	battle.connect("move_used",
+		func(u: String, m: String, tgt: String) -> void:
+			EventBus.battle_move_used.emit(u, m, tgt)
+	)
+	battle.connect("damage_dealt",
+		func(tgt: String, amt: int, hp: int, max_hp: int) -> void:
+			EventBus.battle_damage_dealt.emit(tgt, amt, hp, max_hp)
+	)
+	battle.connect("hp_restored",
+		func(tgt: String, amt: int, hp: int, max_hp: int) -> void:
+			EventBus.battle_hp_restored.emit(tgt, amt, hp, max_hp)
+	)
+	battle.connect("stat_changed",
+		func(tgt: String, stat: String, delta: int, stage: int) -> void:
+			EventBus.battle_stat_changed.emit(tgt, stat, delta, stage)
+	)
+	battle.connect("monster_fainted",
+		func(name: String) -> void:
+			EventBus.battle_monster_fainted.emit(name)
+	)
+	battle.connect("damage_dealt_keyed",
+		func(id: String, amt: int, hp: int, max_hp: int) -> void:
+			EventBus.battle_damage_dealt_keyed.emit(id, amt, hp, max_hp)
+	)
+	battle.connect("hp_restored_keyed",
+		func(id: String, amt: int, hp: int, max_hp: int) -> void:
+			EventBus.battle_hp_restored_keyed.emit(id, amt, hp, max_hp)
+	)
+	battle.connect("waiting_for_input",
+		func(actor_id: String, available_moves: Array) -> void:
+			EventBus.battle_waiting_for_input.emit(actor_id, available_moves)
+	)
+	battle.connect("needs_target",
+		func(actor_id: String, target_ids: Array[String]) -> void:
+			EventBus.battle_needs_target.emit(actor_id, target_ids)
+	)
+	battle.connect("gauge_updated",
+		func(actor_id: String, value: float) -> void:
+			EventBus.battle_gauge_updated.emit(actor_id, value)
+	)
+	battle.connect("battle_ended",
+		func(winner_id: String, action_count: int) -> void:
+			_on_battle_ended_atb_nvm_interactive(winner_id, action_count)
+	)
+
+	var tick_driver: Node = _ATBTickDriver.new()
+	tick_driver.call("setup", battle)
+	add_child(tick_driver)
+	_atb_tick_driver = tick_driver
+
+	battle.call("run", player_team, enemy_team, move_library)
+
+
+func _on_battle_ended_atb_nvm_interactive(winner_id: String, action_count: int) -> void:
+	if _atb_tick_driver != null:
+		_atb_tick_driver.queue_free()
+		_atb_tick_driver = null
+	var winner_name: String = "Nobody"
+	var loser_name: String = ""
+	if winner_id == "player":
+		winner_name = "Player Team"
+		loser_name = "Enemy Team"
+	elif winner_id == "enemy":
+		winner_name = "Enemy Team"
+		loser_name = "Player Team"
+	elif winner_id == "draw":
+		winner_name = "(draw)"
+		loser_name = "(draw)"
+	EventBus.battle_ended.emit(winner_name, loser_name, action_count)
 	_active_battle = null
 
 

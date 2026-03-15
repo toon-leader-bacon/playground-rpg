@@ -1,0 +1,161 @@
+[gd_scene format=3 uid="uid://battle_scene_atb2v2"]
+
+[ext_resource type="Script" path="res://engine/battle/view/BattleSceneATB2v2.gd" id="1_atb2v2"]
+
+[node name="BattleSceneATB2v2" type="Control"]
+script = ExtResource("1_atb2v2")
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="EnemyPanel" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 0.25
+
+[node name="Enemy0Panel" type="VBoxContainer" parent="EnemyPanel"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Enemy0NameLabel" type="Label" parent="EnemyPanel/Enemy0Panel"]
+text = "Enemy 0"
+
+[node name="Enemy0HPBar" type="ProgressBar" parent="EnemyPanel/Enemy0Panel"]
+custom_minimum_size = Vector2(200, 20)
+max_value = 100.0
+value = 100.0
+
+[node name="Enemy0HPText" type="Label" parent="EnemyPanel/Enemy0Panel"]
+text = "100 / 100"
+
+[node name="Enemy0ATBBar" type="ProgressBar" parent="EnemyPanel/Enemy0Panel"]
+custom_minimum_size = Vector2(200, 14)
+max_value = 100.0
+value = 0.0
+
+[node name="Enemy0ATBLabel" type="Label" parent="EnemyPanel/Enemy0Panel"]
+text = "ATB"
+theme_override_font_sizes/font_size = 10
+
+[node name="Enemy1Panel" type="VBoxContainer" parent="EnemyPanel"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Enemy1NameLabel" type="Label" parent="EnemyPanel/Enemy1Panel"]
+text = "Enemy 1"
+
+[node name="Enemy1HPBar" type="ProgressBar" parent="EnemyPanel/Enemy1Panel"]
+custom_minimum_size = Vector2(200, 20)
+max_value = 100.0
+value = 100.0
+
+[node name="Enemy1HPText" type="Label" parent="EnemyPanel/Enemy1Panel"]
+text = "100 / 100"
+
+[node name="Enemy1ATBBar" type="ProgressBar" parent="EnemyPanel/Enemy1Panel"]
+custom_minimum_size = Vector2(200, 14)
+max_value = 100.0
+value = 0.0
+
+[node name="Enemy1ATBLabel" type="Label" parent="EnemyPanel/Enemy1Panel"]
+text = "ATB"
+theme_override_font_sizes/font_size = 10
+
+[node name="MessageBox" type="RichTextLabel" parent="."]
+layout_mode = 1
+anchor_top = 0.25
+anchor_right = 0.6
+anchor_bottom = 0.75
+scroll_following = true
+
+[node name="ActionMenu" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchor_left = 0.6
+anchor_top = 0.25
+anchor_right = 1.0
+anchor_bottom = 0.75
+visible = false
+
+[node name="CurrentActorLabel" type="Label" parent="ActionMenu"]
+text = "Choose a move:"
+
+[node name="MoveButton0" type="Button" parent="ActionMenu"]
+text = "Move 0"
+
+[node name="MoveButton1" type="Button" parent="ActionMenu"]
+text = "Move 1"
+
+[node name="MoveButton2" type="Button" parent="ActionMenu"]
+text = "Move 2"
+
+[node name="MoveButton3" type="Button" parent="ActionMenu"]
+text = "Move 3"
+
+[node name="TargetMenu" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchor_left = 0.6
+anchor_top = 0.25
+anchor_right = 1.0
+anchor_bottom = 0.75
+visible = false
+
+[node name="TargetButton0" type="Button" parent="TargetMenu"]
+text = "Target 0"
+
+[node name="TargetButton1" type="Button" parent="TargetMenu"]
+text = "Target 1"
+
+[node name="PlayerPanel" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchor_top = 0.75
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Player0Panel" type="VBoxContainer" parent="PlayerPanel"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Player0NameLabel" type="Label" parent="PlayerPanel/Player0Panel"]
+text = "Player 0"
+
+[node name="Player0HPBar" type="ProgressBar" parent="PlayerPanel/Player0Panel"]
+custom_minimum_size = Vector2(200, 20)
+max_value = 100.0
+value = 100.0
+
+[node name="Player0HPText" type="Label" parent="PlayerPanel/Player0Panel"]
+text = "100 / 100"
+
+[node name="Player0ATBBar" type="ProgressBar" parent="PlayerPanel/Player0Panel"]
+custom_minimum_size = Vector2(200, 14)
+max_value = 100.0
+value = 0.0
+
+[node name="Player0ATBLabel" type="Label" parent="PlayerPanel/Player0Panel"]
+text = "ATB"
+theme_override_font_sizes/font_size = 10
+
+[node name="Player1Panel" type="VBoxContainer" parent="PlayerPanel"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Player1NameLabel" type="Label" parent="PlayerPanel/Player1Panel"]
+text = "Player 1"
+
+[node name="Player1HPBar" type="ProgressBar" parent="PlayerPanel/Player1Panel"]
+custom_minimum_size = Vector2(200, 20)
+max_value = 100.0
+value = 100.0
+
+[node name="Player1HPText" type="Label" parent="PlayerPanel/Player1Panel"]
+text = "100 / 100"
+
+[node name="Player1ATBBar" type="ProgressBar" parent="PlayerPanel/Player1Panel"]
+custom_minimum_size = Vector2(200, 14)
+max_value = 100.0
+value = 0.0
+
+[node name="Player1ATBLabel" type="Label" parent="PlayerPanel/Player1Panel"]
+text = "ATB"
+theme_override_font_sizes/font_size = 10
