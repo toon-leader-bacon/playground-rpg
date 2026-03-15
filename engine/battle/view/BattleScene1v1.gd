@@ -48,7 +48,7 @@ func _start_demo_battle() -> void:
 		return
 	var player: MonsterInstance = MonsterInstance.create(player_config, 5)
 	var enemy: MonsterInstance = MonsterInstance.create(enemy_config, 5)
-	BattleManager.start_battle(BattleManager.CombatStyle.TURN_BASED_1V1_INTERACTIVE, [player, enemy])
+	BattleManager.start_battle(BattleManager.CombatStyle.TURN_BASED_1V1_INTERACTIVE, [[player], [enemy]])
 
 
 func _on_battle_combatants_initialized(

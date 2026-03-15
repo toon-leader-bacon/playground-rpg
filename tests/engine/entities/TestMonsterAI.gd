@@ -1,67 +1,107 @@
 extends GdUnitTestSuite
+## Tests for the RandomAI strategy (the concrete MonsterAI subclass).
+
+const _RandomAI = preload("res://engine/entities/controller/ai/RandomAI.gd")
 
 
-func test_choose_action_returns_valid_index() -> void:
-	# Step 1: set up inputs
+func test_choose_action_returns_valid_action() -> void:
 	var config := _make_config(["tackle", "growl", "ember"])
 	var actor := MonsterInstance.create(config, 1)
 	var target := MonsterInstance.create(config, 1)
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 42
 
-	# Step 2: run code under test
-	var action := MonsterAI.choose_action(actor, target, rng)
+	var ai := _RandomAI.new()
+	var lib := _make_lib(["tackle", "growl", "ember"])
+	var resolver := _make_resolver("enemy", target)
 
-	# Step 3: validate output
-	assert_int(action).is_between(0, 2)
+	var action: Action = ai.choose_action("player", actor, lib, resolver, rng)
+
+	assert_object(action).is_not_null()
+	assert_str(action.actor_id).is_equal("player")
+	assert_str(action.target_id).is_equal("enemy")
+	assert_object(action.actor).is_equal(actor)
+	assert_object(action.target).is_equal(target)
+	assert_object(action.move).is_not_null()
 
 
-func test_choose_action_returns_minus_one_with_no_moves() -> void:
+func test_choose_action_returns_null_with_no_moves() -> void:
 	var config := _make_config([])
 	var actor := MonsterInstance.create(config, 1)
 	var target := MonsterInstance.create(config, 1)
-
-	var action := MonsterAI.choose_action(actor, target)
-
-	assert_int(action).is_equal(-1)
-
-
-func test_choose_action_with_one_move_always_returns_zero() -> void:
-	var config := _make_config(["tackle"])
-	var actor := MonsterInstance.create(config, 1)
-	var target := MonsterInstance.create(config, 1)
 	var rng := RandomNumberGenerator.new()
 
-	for i in 10:
-		rng.seed = i
-		var action := MonsterAI.choose_action(actor, target, rng)
-		assert_int(action).is_equal(0)
+	var ai := _RandomAI.new()
+	var lib: Dictionary[String, MoveConfig] = {}
+	var resolver := _make_resolver("enemy", target)
+
+	var action: Action = ai.choose_action("player", actor, lib, resolver, rng)
+
+	assert_object(action).is_null()
 
 
-func test_choose_action_returns_minus_one_with_null_config() -> void:
+func test_choose_action_returns_null_with_null_config() -> void:
 	var actor := MonsterInstance.new()
 	actor.config = null
 	var target := MonsterInstance.create(_make_config(["tackle"]), 1)
+	var rng := RandomNumberGenerator.new()
 
-	var action := MonsterAI.choose_action(actor, target)
+	var ai := _RandomAI.new()
+	var lib := _make_lib(["tackle"])
+	var resolver := _make_resolver("enemy", target)
 
-	assert_int(action).is_equal(-1)
+	var action: Action = ai.choose_action("player", actor, lib, resolver, rng)
+
+	assert_object(action).is_null()
 
 
-func test_choose_action_produces_distribution_across_moves() -> void:
-	# Verify RANDOM strategy actually picks different moves over many calls
+func test_choose_action_with_one_move_always_picks_that_move() -> void:
+	var config := _make_config(["tackle"])
+	var actor := MonsterInstance.create(config, 1)
+	var target := MonsterInstance.create(config, 1)
+	var lib := _make_lib(["tackle"])
+	var resolver := _make_resolver("enemy", target)
+	var rng := RandomNumberGenerator.new()
+
+	var ai := _RandomAI.new()
+	for i: int in 10:
+		rng.seed = i
+		var action: Action = ai.choose_action("player", actor, lib, resolver, rng)
+		assert_object(action).is_not_null()
+		assert_str(action.move.id).is_equal("tackle")
+
+
+func test_choose_action_distributes_across_moves() -> void:
 	var config := _make_config(["a", "b", "c"])
 	var actor := MonsterInstance.create(config, 1)
 	var target := MonsterInstance.create(config, 1)
+	var lib := _make_lib(["a", "b", "c"])
+	var resolver := _make_resolver("enemy", target)
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 99
 
-	var seen := {}
-	for i in 30:
-		var action := MonsterAI.choose_action(actor, target, rng)
-		seen[action] = true
+	var ai := _RandomAI.new()
+	var seen: Dictionary = {}
+	for i: int in 30:
+		var action: Action = ai.choose_action("player", actor, lib, resolver, rng)
+		seen[action.move.id] = true
 
 	assert_int(seen.size()).is_greater(1)
+
+
+func test_base_class_choose_action_returns_null_and_errors() -> void:
+	# MonsterAI base class should push an error and return null — subclasses must override.
+	var config := _make_config(["tackle"])
+	var actor := MonsterInstance.create(config, 1)
+	var target := MonsterInstance.create(config, 1)
+	var lib := _make_lib(["tackle"])
+	var resolver := _make_resolver("enemy", target)
+	var rng := RandomNumberGenerator.new()
+
+	var base_ai := MonsterAI.new()
+	var action: Action = base_ai.choose_action("player", actor, lib, resolver, rng)
+
+	assert_object(action).is_null()
 
 
 # --- Helpers ---
@@ -86,3 +126,21 @@ func _make_stats(hp: int, atk: int, def_val: int, spd: int) -> StatBlock:
 	s.defense = def_val
 	s.speed = spd
 	return s
+
+
+func _make_lib(move_ids: Array[String]) -> Dictionary[String, MoveConfig]:
+	var lib: Dictionary[String, MoveConfig] = {}
+	for id: String in move_ids:
+		var m := MoveConfig.new()
+		m.id = id
+		m.display_name = id
+		m.power = 10
+		m.accuracy = 100
+		lib[id] = m
+	return lib
+
+
+func _make_resolver(target_id: String, target: MonsterInstance) -> Callable:
+	# Returns a Callable matching: func(actor_id: String) -> Dictionary
+	return func(_actor_id: String) -> Dictionary:
+		return {target_id: target}

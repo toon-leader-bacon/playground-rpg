@@ -8,12 +8,16 @@ signal damage_dealt(target_name: String, amount: int, remaining_hp: int, max_hp:
 signal hp_restored(target_name: String, amount: int, new_hp: int, max_hp: int)
 signal stat_changed(target_name: String, stat: String, delta: int, total_stage: int)
 signal monster_fainted(monster_name: String)
+signal damage_dealt_keyed(target_id: String, amount: int, remaining_hp: int, max_hp: int)
+signal hp_restored_keyed(actor_id: String, amount: int, new_hp: int, max_hp: int)
 
 const _ActionResolver = preload("res://engine/battle/controller/ActionResolver.gd")
 const _ActionResult = preload("res://engine/battle/model/ActionResult.gd")
 
 
-## Execute all actions in queue, sorted by speed. Stops if a target faints mid-queue.
+## Execute all actions in queue, sorted by speed.
+## Skips individual actions if the actor or target has already fainted mid-queue.
+## Does NOT stop the whole queue on a faint — remaining actors still act.
 func run(queue: Array[Action], state: BattleState, rng: RandomNumberGenerator) -> void:
 	# Pre-assign random tiebreak values so the comparator is consistent (required by sort_custom).
 	var tiebreaks: Array[float] = []
@@ -38,6 +42,8 @@ func run(queue: Array[Action], state: BattleState, rng: RandomNumberGenerator) -
 	for action: Action in sorted:
 		if action.actor.is_fainted():
 			continue
+		if action.target.is_fainted():
+			continue
 
 		if action.move != null:
 			move_used.emit(
@@ -55,6 +61,7 @@ func run(queue: Array[Action], state: BattleState, rng: RandomNumberGenerator) -
 				action.target.current_hp,
 				action.target.max_hp()
 			)
+			damage_dealt_keyed.emit(action.target_id, result.damage, action.target.current_hp, action.target.max_hp())
 
 		if result.healed > 0:
 			hp_restored.emit(
@@ -63,6 +70,7 @@ func run(queue: Array[Action], state: BattleState, rng: RandomNumberGenerator) -
 				action.actor.current_hp,
 				action.actor.max_hp()
 			)
+			hp_restored_keyed.emit(action.actor_id, result.healed, action.actor.current_hp, action.actor.max_hp())
 
 		if result.stat_name != "":
 			var affected: MonsterInstance
@@ -79,4 +87,3 @@ func run(queue: Array[Action], state: BattleState, rng: RandomNumberGenerator) -
 
 		if result.fainted:
 			monster_fainted.emit(action.target.config.display_name)
-			break

@@ -1,15 +1,24 @@
 class_name SpeedBasedScheduler
 extends RefCounted
 ## Turn scheduler for simultaneous-submission combat (Pokemon style).
-## Both actors submit each round; faster actor resolves first.
+## All actors submit each round; speed order is resolved by SpeedOrderedActionRunner.
+##
+## actor_ids: the set of combatant IDs that must submit each turn.
+## 1v1 usage: SpeedBasedScheduler.new(["player", "enemy"])
+## 2v2 usage: SpeedBasedScheduler.new(["player_0", "player_1", "enemy_0", "enemy_1"])
 
 const _DecisionCollector = preload("res://engine/battle/controller/DecisionCollector.gd")
 
+var _actor_ids: Array[String] = []
 
-## Returns a collector requiring both "player" and "enemy" to submit.
-func next_collector(_state: BattleState) -> DecisionCollector:
-	var actors: Array[String] = ["player", "enemy"]
-	return _DecisionCollector.create_all_submitted(actors)
+
+func _init(actor_ids: Array[String] = ["player", "enemy"]) -> void:
+	_actor_ids = actor_ids
+
+
+## Returns a collector requiring all actor_ids to submit before committing.
+func next_collector() -> DecisionCollector:
+	return _DecisionCollector.create_all_submitted(_actor_ids)
 
 
 ## Advance the turn counter on the battle state.

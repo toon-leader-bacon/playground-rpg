@@ -14,12 +14,21 @@ enum Effect {
 	# SELF_DESTRUCT, MULTI_HIT, CHARGING, COUNTER
 }
 
+## TargetType declares who a move is allowed to target.
+## Used by PlayerController and AI to resolve valid targets before submission.
+enum TargetType {
+	SINGLE_ENEMY,  # Targets one opponent (default).
+	SINGLE_ALLY,   # Targets one teammate.
+	SELF,          # Always targets the caster; no targeting UI shown.
+}
+
 @export var id: String = ""
 @export var display_name: String = ""
-@export var type_tag: int = TypeTag.Type.NORMAL  # TypeTag.Type value
-@export var power: int = 0                        # damage power (NONE), or HP restored (HEAL)
+@export var type_tag: int = TypeTag.Type.NORMAL       # TypeTag.Type value
+@export var power: int = 0                             # damage power (NONE), or HP restored (HEAL)
 @export var accuracy: float = 1.0
 @export var effect: Effect = Effect.NONE
+@export var target_type: int = TargetType.SINGLE_ENEMY
 
 
 func serialize() -> Dictionary:
@@ -30,6 +39,7 @@ func serialize() -> Dictionary:
 		"power": power,
 		"accuracy": accuracy,
 		"effect": effect,
+		"target_type": target_type,
 	}
 
 
@@ -41,6 +51,7 @@ static func deserialize(data: Dictionary) -> MoveConfig:
 	m.power = data.get("power", 0)
 	m.accuracy = data.get("accuracy", 1.0)
 	m.effect = data.get("effect", Effect.NONE) as MoveConfig.Effect
+	m.target_type = data.get("target_type", TargetType.SINGLE_ENEMY)
 	return m
 
 
@@ -51,6 +62,7 @@ func deserialize_update(data: Dictionary) -> void:
 	power = data.get("power", power)
 	accuracy = data.get("accuracy", accuracy)
 	effect = data.get("effect", effect) as MoveConfig.Effect
+	target_type = data.get("target_type", target_type)
 
 
 func deep_copy() -> MoveConfig:

@@ -54,6 +54,56 @@ func test_fainted_actor_skipped() -> void:
 	assert_int(damage_taken[0]).is_equal(0)
 
 
+func test_fainted_target_skipped() -> void:
+	# Target already fainted before the action runs — action should be skipped entirely.
+	var attacker := MonsterInstance.create(_make_config("attacker", 100, 10, 1, 10), 1)
+	var target := MonsterInstance.create(_make_config("target", 100, 10, 1, 1), 1)
+	target.apply_damage(100)  # already fainted
+
+	var hit := _make_move("hit", 10, MoveConfig.Effect.NONE)
+	var action: Action = _Action.create("attacker", "target", attacker, target, hit)
+
+	var damage_taken: Array = [0]
+	var runner: SpeedOrderedActionRunner = _SpeedOrderedActionRunner.new()
+	runner.damage_dealt.connect(func(_n: String, amt: int, _h: int, _m: int) -> void:
+		damage_taken[0] += amt
+	)
+
+	var state := BattleState.new()
+	runner.run([action], state, RandomNumberGenerator.new())
+
+	assert_int(damage_taken[0]).is_equal(0)
+
+
+func test_remaining_actions_execute_after_mid_queue_faint() -> void:
+	# A kills B; C's action targeting A must still execute (continue not break).
+	var actor_a := MonsterInstance.create(_make_config("a", 100, 100, 1, 100), 1)
+	var actor_b := MonsterInstance.create(_make_config("b", 1, 1, 1, 50), 1)
+	var actor_c := MonsterInstance.create(_make_config("c", 100, 10, 1, 1), 1)
+	var big_hit := _make_move("big_hit", 100, MoveConfig.Effect.NONE)
+	var small_hit := _make_move("small_hit", 5, MoveConfig.Effect.NONE)
+
+	# A kills B (fastest); C attacks A (slowest)
+	var action_a: Action = _Action.create("a", "b", actor_a, actor_b, big_hit)
+	var action_b: Action = _Action.create("b", "a", actor_b, actor_a, small_hit)
+	var action_c: Action = _Action.create("c", "a", actor_c, actor_a, small_hit)
+
+	var damage_to_a: Array = [0]
+	var runner: SpeedOrderedActionRunner = _SpeedOrderedActionRunner.new()
+	runner.damage_dealt.connect(func(name: String, amt: int, _h: int, _m: int) -> void:
+		if name == "A":
+			damage_to_a[0] += amt
+	)
+
+	var state := BattleState.new()
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 0
+	runner.run([action_a, action_b, action_c], state, rng)
+
+	# B was killed by A and B's action is skipped; C's action on A must have fired
+	assert_int(damage_to_a[0]).is_greater(0)
+
+
 func test_signals_fired_for_damage() -> void:
 	var attacker := MonsterInstance.create(_make_config("a", 100, 100, 1, 10), 1)
 	var defender := MonsterInstance.create(_make_config("b", 100, 1, 1, 1), 1)

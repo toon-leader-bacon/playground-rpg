@@ -1,31 +1,25 @@
 class_name MonsterAI
 extends RefCounted
-## Stateless controller that selects a move index for a monster.
-## Returns an index into actor.config.move_ids, or -1 if no moves are available.
+## Base class for AI strategies. Subclasses implement choose_action().
+##
+## target_resolver signature: func(actor_id: String) -> Dictionary
+## The dictionary maps target_actor_id (String) -> target MonsterInstance.
+## RandomAI picks randomly from that set; future strategies may weight by HP, type, etc.
 ##
 ## To add a new AI strategy:
-##   1. Add a value to MonsterConfig.AIStyle
-##   2. Add a match branch in choose_action()
-##   3. Implement the private handler
+##   1. Create a subclass of MonsterAI in engine/entities/controller/ai/
+##   2. Override choose_action()
+##   3. Wire the new class in the BattleController via AIStyle enum (schema/monsters/MonsterConfig.gd)
 
 
-## Select a move for actor to use against target.
-## Accepts an optional rng for deterministic testing.
-static func choose_action(
+## Select an action for the given actor. Must be overridden by subclasses.
+## Returns null if no valid action can be constructed.
+func choose_action(
+	actor_id: String,
 	actor: MonsterInstance,
-	_target: MonsterInstance,
-	rng: RandomNumberGenerator = null
-) -> int:
-	if actor.config == null or actor.config.move_ids.is_empty():
-		return -1
-
-	match actor.config.ai_style:
-		MonsterConfig.AIStyle.RANDOM:
-			return _choose_random(actor, rng)
-		_:
-			return _choose_random(actor, rng)
-
-
-static func _choose_random(actor: MonsterInstance, rng: RandomNumberGenerator = null) -> int:
-	var r := rng if rng != null else RandomNumberGenerator.new()
-	return r.randi_range(0, actor.config.move_ids.size() - 1)
+	move_library: Dictionary[String, MoveConfig],
+	target_resolver: Callable,
+	rng: RandomNumberGenerator
+) -> Action:
+	push_error("MonsterAI.choose_action() must be overridden by a subclass.")
+	return null

@@ -5,6 +5,7 @@ extends RefCounted
 ## Preload ensures BattleState.gd is compiled before this script is parsed,
 ## guaranteeing class_name "BattleState" is registered in all execution contexts.
 const _load_battle_state = preload("res://engine/battle/model/BattleState.gd")
+const _RandomAI = preload("res://engine/entities/controller/ai/RandomAI.gd")
 ## The full battle runs to completion before run() returns.
 ##
 ## Usage:
@@ -27,18 +28,20 @@ signal monster_fainted(monster_name: String)
 signal battle_ended(winner_name: String, loser_name: String, turn_count: int)
 
 var _rng: RandomNumberGenerator
-var _move_library: Dictionary  # String -> MoveConfig
+var _move_library: Dictionary[String, MoveConfig]
+var _ai: MonsterAI
 
 
 ## Run a complete battle. Returns the final BattleState.
 func run(
 	player: MonsterInstance,
 	enemy: MonsterInstance,
-	move_library: Dictionary,
+	move_library: Dictionary[String, MoveConfig],
 	rng: RandomNumberGenerator = null
 ) -> BattleState:
 	_rng = rng if rng != null else RandomNumberGenerator.new()
 	_move_library = move_library
+	_ai = _RandomAI.new()
 
 	var state := BattleState.new()
 	state.player = player
@@ -94,10 +97,13 @@ func _execute_turn(state: BattleState) -> void:
 	])
 
 	# Both monsters choose simultaneously before any action resolves.
-	var player_move_idx: int = MonsterAI.choose_action(player, enemy, _rng)
-	var enemy_move_idx: int = MonsterAI.choose_action(enemy, player, _rng)
-	var player_move: MoveConfig = _resolve_move(player, player_move_idx)
-	var enemy_move: MoveConfig = _resolve_move(enemy, enemy_move_idx)
+	# target_resolver: func(actor_id: String) -> Dictionary — maps target_id -> MonsterInstance
+	var player_resolver: Callable = func(_id: String) -> Dictionary: return {"enemy": enemy}
+	var enemy_resolver: Callable = func(_id: String) -> Dictionary: return {"player": player}
+	var player_action: Action = _ai.choose_action("player", player, _move_library, player_resolver, _rng)
+	var enemy_action: Action = _ai.choose_action("enemy", enemy, _move_library, enemy_resolver, _rng)
+	var player_move: MoveConfig = player_action.move if player_action != null else null
+	var enemy_move: MoveConfig = enemy_action.move if enemy_action != null else null
 
 	# Faster monster acts first; ties broken randomly.
 	if _goes_first(player, enemy):
@@ -116,13 +122,6 @@ func _goes_first(a: MonsterInstance, b: MonsterInstance) -> bool:
 	if spd_a != spd_b:
 		return spd_a > spd_b
 	return _rng.randi_range(0, 1) == 0
-
-
-func _resolve_move(actor: MonsterInstance, move_idx: int) -> MoveConfig:
-	if move_idx < 0 or actor.config.move_ids.is_empty():
-		return null
-	var move_id: String = actor.config.move_ids[move_idx]
-	return _move_library.get(move_id, null) as MoveConfig
 
 
 func _execute_action(

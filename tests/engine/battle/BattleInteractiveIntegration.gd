@@ -42,7 +42,7 @@ func _run() -> void:
 			BattleManager.submit_player_action(actor_id, 0)
 	)
 
-	BattleManager.start_battle(BattleManager.CombatStyle.TURN_BASED_1V1_INTERACTIVE, [player, enemy])
+	BattleManager.start_battle(BattleManager.CombatStyle.TURN_BASED_1V1_INTERACTIVE, [[player], [enemy]])
 
 
 func _on_combatants_initialized(

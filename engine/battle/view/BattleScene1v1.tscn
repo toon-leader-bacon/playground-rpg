@@ -1,9 +1,9 @@
-[gd_scene format=3 uid="uid://battle_scene_interactive"]
+[gd_scene format=3 uid="uid://battle_scene_1v1_interactive"]
 
-[ext_resource type="Script" path="res://engine/battle/view/BattleScene.gd" id="1_bscene"]
+[ext_resource type="Script" path="res://engine/battle/view/BattleScene1v1.gd" id="1_bscene1v1"]
 
 [node name="BattleScene" type="Control"]
-script = ExtResource("1_bscene")
+script = ExtResource("1_bscene1v1")
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0

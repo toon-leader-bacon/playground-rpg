@@ -16,6 +16,7 @@ const _SpeedBasedScheduler = preload("res://engine/battle/controller/SpeedBasedS
 const _SpeedOrderedActionRunner = preload("res://engine/battle/controller/SpeedOrderedActionRunner.gd")
 const _PlayerController = preload("res://engine/battle/controller/PlayerController.gd")
 const _Action = preload("res://engine/battle/model/Action.gd")
+const _RandomAI = preload("res://engine/entities/controller/ai/RandomAI.gd")
 
 const MAX_TURNS := 100
 
@@ -41,6 +42,7 @@ var _rng: RandomNumberGenerator
 var _scheduler: SpeedBasedScheduler
 var _runner: SpeedOrderedActionRunner
 var _player_controller: PlayerController
+var _enemy_ai: MonsterAI
 
 
 ## Start the battle coroutine. Fire-and-forget — do not await this from an autoload.
@@ -55,9 +57,16 @@ func run(
 	_move_library = move_library
 	_rng = rng if rng != null else RandomNumberGenerator.new()
 
-	_scheduler = _SpeedBasedScheduler.new()
+	_scheduler = _SpeedBasedScheduler.new(["player", "enemy"])
 	_runner = _SpeedOrderedActionRunner.new()
 	_player_controller = _PlayerController.new()
+	_enemy_ai = _RandomAI.new()
+
+	# 1v1: auto-select the single valid target whenever needs_target fires (permanent connection)
+	_player_controller.needs_target.connect(func(_actor_id: String, target_ids: Array[String]) -> void:
+		if not target_ids.is_empty():
+			_player_controller.select_target(target_ids[0])
+	)
 
 	# Forward runner signals
 	_runner.move_used.connect(func(u: String, m: String, t: String) -> void:
@@ -98,18 +107,21 @@ func run(
 		)
 
 		# 2. Get collector; advance turn counter
-		var collector: DecisionCollector = _scheduler.next_collector(_state)
+		var collector: DecisionCollector = _scheduler.next_collector()
 		_scheduler.advance(_state)
 
 		# 3. AI submits synchronously
-		var enemy_move_idx: int = MonsterAI.choose_action(_enemy, _player, _rng)
-		var enemy_move_id: String = _enemy.config.move_ids[enemy_move_idx] if enemy_move_idx >= 0 else ""
-		var enemy_move: MoveConfig = _move_library.get(enemy_move_id, null) as MoveConfig
-		var enemy_action: Action = _Action.create("enemy", "player", _enemy, _player, enemy_move)
+		# target_resolver: func(actor_id: String) -> Dictionary — maps target_id -> MonsterInstance
+		var enemy_target_resolver: Callable = func(_actor_id: String) -> Dictionary:
+			return {"player": _player}
+		var enemy_action: Action = _enemy_ai.choose_action("enemy", _enemy, _move_library, enemy_target_resolver, _rng)
 		collector.submit("enemy", enemy_action)
 
-		# 4. Bind player controller
-		_player_controller.bind("player", _player, _enemy, collector, _move_library)
+		# 4. Bind player controller with target resolver and auto-targeting for 1v1
+		# target_resolver: func(actor_id: String) -> Dictionary — maps target_id -> MonsterInstance
+		var player_target_resolver: Callable = func(_actor_id: String) -> Dictionary:
+			return {"enemy": _enemy}
+		_player_controller.bind("player", _player, collector, _move_library, player_target_resolver)
 
 		# 5. Signal UI to present choices
 		waiting_for_input.emit("player", _build_move_list(_player))
@@ -140,8 +152,8 @@ func run(
 
 
 ## Called by UI or scene to forward the player's move choice into the active battle.
-func submit_player_action(move_index: int) -> void:
-	_player_controller.set_decision(move_index)
+func submit_player_action(_actor_id: String, move_index: int) -> void:
+	_player_controller.select_move(move_index)
 
 
 func _build_move_list(monster: MonsterInstance) -> Array[MoveOption]:

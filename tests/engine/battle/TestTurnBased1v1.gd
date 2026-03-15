@@ -34,7 +34,7 @@ func test_faster_monster_deals_damage_first() -> void:
 	# player: ATK=100, DEF=1, SPD=100; enemy: HP=1, ATK=1, DEF=1, SPD=1
 	var player := MonsterInstance.create(_make_config("player", 50, 100, 1, 100), 1)
 	var enemy := MonsterInstance.create(_make_config("enemy", 1, 1, 1, 1), 1)
-	var move_lib: Dictionary = {
+	var move_lib: Dictionary[String, MoveConfig] = {
 		"big_hit": _make_move("big_hit", 100, MoveConfig.Effect.NONE),
 		"tiny_hit": _make_move("tiny_hit", 1, MoveConfig.Effect.NONE),
 	}
@@ -55,7 +55,7 @@ func test_slower_monster_acts_second_in_turn() -> void:
 	var player := MonsterInstance.create(_make_config("player", 100, 1, 50, 1), 1)
 	var enemy := MonsterInstance.create(_make_config("enemy", 100, 1, 50, 100), 1)
 	var damage_log: Array[String] = []
-	var move_lib: Dictionary = {
+	var move_lib: Dictionary[String, MoveConfig] = {
 		"attack": _make_move("attack", 10, MoveConfig.Effect.NONE),
 	}
 	player.config.move_ids = ["attack"]
@@ -83,7 +83,7 @@ func test_heal_effect_restores_hp() -> void:
 	var actor := MonsterInstance.create(_make_config("a", 100, 10, 10, 10), 1)
 	actor.apply_damage(50)
 	var target := MonsterInstance.create(_make_config("b", 100, 10, 10, 10), 1)
-	var move_lib: Dictionary = {
+	var move_lib: Dictionary[String, MoveConfig] = {
 		"heal": _make_move("heal", 20, MoveConfig.Effect.HEAL),
 		"filler": _make_move("filler", 1, MoveConfig.Effect.NONE),
 	}
@@ -103,7 +103,7 @@ func test_buff_speed_self_raises_effective_speed() -> void:
 	var actor := MonsterInstance.create(_make_config("a", 100, 10, 10, 40), 1)
 	var target := MonsterInstance.create(_make_config("b", 100, 10, 10, 10), 1)
 	var speed_before: int = actor.effective_speed()
-	var move_lib: Dictionary = {
+	var move_lib: Dictionary[String, MoveConfig] = {
 		"buff": _make_move("buff", 0, MoveConfig.Effect.BUFF_SPEED_SELF),
 		"filler": _make_move("filler", 0, MoveConfig.Effect.NONE),
 	}
@@ -121,7 +121,7 @@ func test_debuff_speed_target_lowers_effective_speed() -> void:
 	var actor := MonsterInstance.create(_make_config("a", 100, 10, 10, 40), 1)
 	var target := MonsterInstance.create(_make_config("b", 100, 10, 10, 40), 1)
 	var speed_before: int = target.effective_speed()
-	var move_lib: Dictionary = {
+	var move_lib: Dictionary[String, MoveConfig] = {
 		"debuff": _make_move("debuff", 0, MoveConfig.Effect.DEBUFF_SPEED_TARGET),
 		"filler": _make_move("filler", 0, MoveConfig.Effect.NONE),
 	}
@@ -141,7 +141,7 @@ func test_stat_stages_reset_at_battle_start() -> void:
 	var player := MonsterInstance.create(_make_config("player", 50, 10, 10, 20), 1)
 	var enemy := MonsterInstance.create(_make_config("enemy", 50, 10, 10, 20), 1)
 	player.modify_stat_stage("speed", 6)  # Leftover from a previous battle
-	var move_lib: Dictionary = {
+	var move_lib: Dictionary[String, MoveConfig] = {
 		"hit": _make_move("hit", 5, MoveConfig.Effect.NONE),
 	}
 	player.config.move_ids = ["hit"]
@@ -162,7 +162,7 @@ func test_winner_id_set_when_enemy_faints() -> void:
 	# Player is unkillable; enemy has 1 HP
 	var player := MonsterInstance.create(_make_config("the_winner", 9999, 100, 1, 50), 1)
 	var enemy := MonsterInstance.create(_make_config("the_loser", 1, 1, 1, 1), 1)
-	var move_lib: Dictionary = {
+	var move_lib: Dictionary[String, MoveConfig] = {
 		"nuke": _make_move("nuke", 100, MoveConfig.Effect.NONE),
 		"tickle": _make_move("tickle", 1, MoveConfig.Effect.NONE),
 	}
@@ -182,7 +182,7 @@ func test_fainted_monster_does_not_act_after_fainting() -> void:
 	var player := MonsterInstance.create(_make_config("player", 9999, 100, 1, 100), 1)
 	var enemy := MonsterInstance.create(_make_config("enemy", 1, 999, 1, 1), 1)
 	var player_damage_taken: int = 0
-	var move_lib: Dictionary = {
+	var move_lib: Dictionary[String, MoveConfig] = {
 		"nuke": _make_move("nuke", 100, MoveConfig.Effect.NONE),
 	}
 	player.config.move_ids = ["nuke"]
@@ -205,7 +205,7 @@ func test_fainted_monster_does_not_act_after_fainting() -> void:
 func test_combat_log_has_entries() -> void:
 	var player := MonsterInstance.create(_make_config("a", 50, 20, 10, 20), 1)
 	var enemy := MonsterInstance.create(_make_config("b", 50, 20, 10, 20), 1)
-	var move_lib: Dictionary = {
+	var move_lib: Dictionary[String, MoveConfig] = {
 		"hit": _make_move("hit", 5, MoveConfig.Effect.NONE),
 	}
 	player.config.move_ids = ["hit"]

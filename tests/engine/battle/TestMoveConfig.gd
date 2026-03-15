@@ -12,6 +12,7 @@ func test_serialize_damage_move_round_trip() -> void:
 	move.power = 25
 	move.accuracy = 0.9
 	move.effect = MoveConfig.Effect.NONE
+	move.target_type = MoveConfig.TargetType.SINGLE_ENEMY
 
 	# Step 2: run code under test
 	var data: Dictionary = move.serialize()
@@ -24,6 +25,24 @@ func test_serialize_damage_move_round_trip() -> void:
 	assert_int(restored.power).is_equal(25)
 	assert_float(restored.accuracy).is_equal_approx(0.9, 0.001)
 	assert_int(restored.effect).is_equal(MoveConfig.Effect.NONE)
+	assert_int(restored.target_type).is_equal(MoveConfig.TargetType.SINGLE_ENEMY)
+
+
+func test_target_type_self_round_trips() -> void:
+	var move := MoveConfig.new()
+	move.id = "recover"
+	move.effect = MoveConfig.Effect.HEAL
+	move.target_type = MoveConfig.TargetType.SELF
+
+	var restored: MoveConfig = MoveConfig.deserialize(move.serialize())
+
+	assert_int(restored.target_type).is_equal(MoveConfig.TargetType.SELF)
+
+
+func test_target_type_defaults_to_single_enemy() -> void:
+	var restored: MoveConfig = MoveConfig.deserialize({})
+
+	assert_int(restored.target_type).is_equal(MoveConfig.TargetType.SINGLE_ENEMY)
 
 
 func test_serialize_heal_move_round_trip() -> void:

@@ -10,8 +10,8 @@ const _Controller = preload("res://engine/battle/controller/TurnBased1v1Controll
 
 func _auto_submit(controller: Object) -> void:
 	controller.waiting_for_input.connect(
-		func(_id: String, _moves: Array) -> void:
-			controller.submit_player_action(0)
+		func(actor_id: String, _moves: Array) -> void:
+			controller.submit_player_action(actor_id, 0)
 	)
 
 

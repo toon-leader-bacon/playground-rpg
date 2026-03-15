@@ -10,3 +10,4 @@ type_tag = 2
 power = 25
 accuracy = 0.9
 effect = 0
+target_type = 0

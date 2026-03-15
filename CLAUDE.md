@@ -112,7 +112,7 @@ script = ExtResource("1_id")
 ### Headless class cache
 
 After adding a script with class_name, run:
-`/Applications/Godot.app/Contents/MacOS/godot --headless --import`
+`godot --headless --import`
 Without this, tests referencing the new type may fail with "type not found", even if the script is correct.
 
 ### Running tests heedlessly

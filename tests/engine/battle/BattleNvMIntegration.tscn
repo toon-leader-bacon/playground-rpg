@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://battle_nvm_integration_demo"]
+
+[ext_resource type="Script" path="res://tests/engine/battle/BattleNvMIntegration.gd" id="1_bnvmintg"]
+
+[node name="BattleNvMIntegration" type="Node"]
+script = ExtResource("1_bnvmintg")

@@ -25,6 +25,10 @@ static func create_all_submitted(actors: Array[String]) -> DecisionCollector:
 	return c
 
 
+func has_submitted(actor_id: String) -> bool:
+	return _submissions.has(actor_id)
+
+
 ## Submit an action for an actor. Asserts no double-submit and that actor is required.
 func submit(actor_id: String, action: Action) -> void:
 	assert(actor_id in _required_actors,
