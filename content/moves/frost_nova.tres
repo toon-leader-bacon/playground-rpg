@@ -1,0 +1,30 @@
+[gd_resource type="Resource" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://schema/monsters/MoveConfig.gd" id="1_mc"]
+[ext_resource type="Script" path="res://schema/battle/EffectEntry.gd" id="2_ee"]
+
+[sub_resource type="Resource" id="EffectEntry_slow"]
+script = ExtResource("2_ee")
+chance = 1.0
+target = "target"
+condition_id = "slow"
+unless_crit = true
+
+[sub_resource type="Resource" id="EffectEntry_freeze"]
+script = ExtResource("2_ee")
+chance = 1.0
+target = "target"
+condition_id = "freeze"
+if_crit = true
+
+[resource]
+script = ExtResource("1_mc")
+id = "frost_nova"
+display_name = "Frost Nova"
+type_tag = 7
+move_power = 60
+accuracy = 1.0
+pp = 10
+target_mode = 0
+damage_formula = "move_power * caster.special_attack / target.special_defense"
+post_effects = [SubResource("EffectEntry_slow"), SubResource("EffectEntry_freeze")]

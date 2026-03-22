@@ -1,0 +1,13 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://schema/battle/ConditionConfig.gd" id="1_cc"]
+
+[resource]
+script = ExtResource("1_cc")
+id = "paralysis"
+display_name = "Paralysis"
+trigger_event = "battle_actor_turn_started"
+stat_modifiers = [{"stat": "speed", "multiplier": 0.5}]
+turn_denial_chance = 0.25
+duration_type = 0
+duration = -1

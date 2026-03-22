@@ -19,7 +19,7 @@ func test_battle_ends_and_winner_is_set() -> void:
 	var player := MonsterInstance.create(_make_config("player", 9999, 100, 1, 100), 1)
 	var enemy := MonsterInstance.create(_make_config("enemy", 1, 1, 1, 1), 1)
 	var move_lib: Dictionary[String, MoveConfig] = {
-		"nuke": _make_move("nuke", 100, MoveConfig.Effect.NONE),
+		"nuke": _make_move("nuke", 100),
 	}
 	player.config.move_ids = ["nuke"]
 	enemy.config.move_ids = ["nuke"]
@@ -45,7 +45,7 @@ func test_winner_id_enemy_when_player_weak() -> void:
 	var player := MonsterInstance.create(_make_config("player", 1, 1, 1, 1), 1)
 	var enemy := MonsterInstance.create(_make_config("enemy", 9999, 100, 1, 100), 1)
 	var move_lib: Dictionary[String, MoveConfig] = {
-		"nuke": _make_move("nuke", 100, MoveConfig.Effect.NONE),
+		"nuke": _make_move("nuke", 100),
 	}
 	player.config.move_ids = ["nuke"]
 	enemy.config.move_ids = ["nuke"]
@@ -68,7 +68,7 @@ func test_stat_stages_reset_at_start() -> void:
 	var enemy := MonsterInstance.create(_make_config("enemy", 50, 10, 10, 20), 1)
 	player.modify_stat_stage("speed", 6)
 	var move_lib: Dictionary[String, MoveConfig] = {
-		"hit": _make_move("hit", 5, MoveConfig.Effect.NONE),
+		"hit": _make_move("hit", 5),
 	}
 	player.config.move_ids = ["hit"]
 	enemy.config.move_ids = ["hit"]
@@ -85,7 +85,7 @@ func test_fainted_monster_does_not_act() -> void:
 	var player := MonsterInstance.create(_make_config("player", 9999, 100, 1, 100), 1)
 	var enemy := MonsterInstance.create(_make_config("enemy", 1, 999, 1, 1), 1)
 	var move_lib: Dictionary[String, MoveConfig] = {
-		"nuke": _make_move("nuke", 100, MoveConfig.Effect.NONE),
+		"nuke": _make_move("nuke", 100),
 	}
 	player.config.move_ids = ["nuke"]
 	enemy.config.move_ids = ["nuke"]
@@ -109,7 +109,7 @@ func test_combatants_initialized_signal_fires() -> void:
 	var player := MonsterInstance.create(_make_config("hero", 80, 10, 10, 10), 1)
 	var enemy := MonsterInstance.create(_make_config("foe", 60, 10, 10, 10), 1)
 	var move_lib: Dictionary[String, MoveConfig] = {
-		"hit": _make_move("hit", 100, MoveConfig.Effect.NONE),
+		"hit": _make_move("hit", 5),
 	}
 	player.config.move_ids = ["hit"]
 	enemy.config.move_ids = ["hit"]
@@ -146,12 +146,13 @@ func _make_config(id: String, hp: int, atk: int, def_val: int, spd: int) -> Mons
 	return config
 
 
-func _make_move(id: String, power: int, effect: MoveConfig.Effect) -> MoveConfig:
+func _make_move(id: String, power: int) -> MoveConfig:
 	var move := MoveConfig.new()
 	move.id = id
 	move.display_name = id.capitalize()
 	move.type_tag = TypeTag.Type.NORMAL
-	move.power = power
+	move.move_power = power
 	move.accuracy = 1.0
-	move.effect = effect
+	if power > 0:
+		move.damage_formula = "move_power * caster.attack / target.defense"
 	return move

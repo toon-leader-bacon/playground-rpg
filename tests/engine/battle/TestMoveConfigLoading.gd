@@ -9,9 +9,10 @@ func test_load_ember() -> void:
 	assert_str(move.id).is_equal("ember")
 	assert_str(move.display_name).is_equal("Ember")
 	assert_int(move.type_tag).is_equal(TypeTag.Type.FIRE)
-	assert_int(move.power).is_equal(25)
-	assert_float(move.accuracy).is_equal_approx(0.9, 0.001)
-	assert_int(move.effect).is_equal(MoveConfig.Effect.NONE)
+	assert_int(move.move_power).is_equal(40)
+	assert_float(move.accuracy).is_equal_approx(1.0, 0.001)
+	assert_int(move.post_effects.size()).is_equal(1)
+	assert_str(move.post_effects[0].condition_id).is_equal("burn")
 
 
 func test_load_scratch() -> void:
@@ -19,9 +20,9 @@ func test_load_scratch() -> void:
 
 	assert_object(move).is_not_null()
 	assert_str(move.id).is_equal("scratch")
-	assert_int(move.power).is_equal(15)
+	assert_int(move.move_power).is_equal(40)
 	assert_float(move.accuracy).is_equal_approx(1.0, 0.001)
-	assert_int(move.effect).is_equal(MoveConfig.Effect.NONE)
+	assert_str(move.damage_formula).is_not_empty()
 
 
 func test_load_rock_slam() -> void:
@@ -29,8 +30,8 @@ func test_load_rock_slam() -> void:
 
 	assert_object(move).is_not_null()
 	assert_str(move.id).is_equal("rock_slam")
-	assert_int(move.power).is_equal(20)
-	assert_int(move.effect).is_equal(MoveConfig.Effect.NONE)
+	assert_int(move.move_power).is_equal(65)
+	assert_str(move.damage_formula).is_not_empty()
 
 
 func test_load_recover() -> void:
@@ -38,8 +39,10 @@ func test_load_recover() -> void:
 
 	assert_object(move).is_not_null()
 	assert_str(move.id).is_equal("recover")
-	assert_int(move.power).is_equal(30)
-	assert_int(move.effect).is_equal(MoveConfig.Effect.HEAL)
+	assert_int(move.move_power).is_equal(0)
+	assert_str(move.heal_formula).is_not_empty()
+	assert_str(move.accuracy_node).is_equal("always_hit")
+	assert_int(move.target_mode).is_equal(MoveConfig.TargetType.SELF)
 
 
 func test_load_quick_step() -> void:
@@ -47,8 +50,8 @@ func test_load_quick_step() -> void:
 
 	assert_object(move).is_not_null()
 	assert_str(move.id).is_equal("quick_step")
-	assert_int(move.power).is_equal(0)
-	assert_int(move.effect).is_equal(MoveConfig.Effect.BUFF_SPEED_SELF)
+	assert_int(move.post_effects.size()).is_equal(1)
+	assert_str(move.post_effects[0].condition_id).is_equal("speed_up_1")
 
 
 func test_load_slow_down() -> void:
@@ -56,5 +59,5 @@ func test_load_slow_down() -> void:
 
 	assert_object(move).is_not_null()
 	assert_str(move.id).is_equal("slow_down")
-	assert_int(move.power).is_equal(0)
-	assert_int(move.effect).is_equal(MoveConfig.Effect.DEBUFF_SPEED_TARGET)
+	assert_int(move.post_effects.size()).is_equal(1)
+	assert_str(move.post_effects[0].condition_id).is_equal("speed_down_1")

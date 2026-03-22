@@ -22,6 +22,11 @@ ConfigLoader="*res://engine/core/ConfigLoader.gd"
 BattleManager="*res://engine/core/BattleManager.gd"
 WorldManager="*res://engine/core/WorldManager.gd"
 
+[display]
+
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/gdUnit4/plugin.cfg")

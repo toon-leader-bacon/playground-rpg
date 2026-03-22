@@ -9,10 +9,10 @@ extends RefCounted
 ## AI handles all enemy monsters synchronously.
 
 const _BattleStateNvM = preload("res://engine/battle/model/BattleStateNvM.gd")
-const _DecisionCollector = preload("res://engine/battle/controller/DecisionCollector.gd")
-const _SpeedBasedScheduler = preload("res://engine/battle/controller/SpeedBasedScheduler.gd")
-const _SpeedOrderedActionRunner = preload("res://engine/battle/controller/SpeedOrderedActionRunner.gd")
-const _PlayerController = preload("res://engine/battle/controller/PlayerController.gd")
+const _DecisionCollector = preload("res://engine/battle/scheduler/DecisionCollector.gd")
+const _SpeedBasedScheduler = preload("res://engine/battle/scheduler/SpeedBasedScheduler.gd")
+const _SpeedOrderedActionRunner = preload("res://engine/battle/scheduler/SpeedOrderedActionRunner.gd")
+const _PlayerController = preload("res://engine/battle/scheduler/PlayerController.gd")
 const _Action = preload("res://engine/battle/model/Action.gd")
 const _RandomAI = preload("res://engine/entities/controller/ai/RandomAI.gd")
 

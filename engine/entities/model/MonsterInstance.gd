@@ -10,6 +10,19 @@ var current_hp: int = 0
 ## Values are integers clamped to [-6, 6]. Reset at the start of each battle.
 var stat_stages: Dictionary = {}
 
+## Active conditions on this monster (Array of ConditionInstance objects).
+var active_conditions: Array = []
+
+## Condition stat modifiers keyed by stat name.
+## Each entry is an Array of Dictionaries: [{ "multiplier": float, "source": String }]
+var condition_modifiers: Dictionary = {}
+
+## PP tracking: { move_id: remaining_pp }
+var current_pp: Dictionary = {}
+
+## Turn denial flag — set by ConditionInstance, cleared by ActionResolver at DECLARE.
+var _turn_denied: bool = false
+
 
 ## Create a fresh MonsterInstance from a config at a given level.
 ## current_hp is initialized to max_hp.
@@ -73,6 +86,61 @@ func modify_stat_stage(stat: String, delta: int) -> void:
 
 func reset_stat_stages() -> void:
 	stat_stages.clear()
+
+
+## Count of positive stat stage values (used by Stored Power formula).
+func buff_count() -> int:
+	var count: int = 0
+	for val: int in stat_stages.values():
+		if val > 0:
+			count += val
+	return count
+
+
+# --- PP tracking ---
+
+func deduct_pp(move_id: String, max_pp: int) -> void:
+	var remaining: int = get_pp(move_id, max_pp)
+	current_pp[move_id] = maxi(0, remaining - 1)
+
+
+func get_pp(move_id: String, max_pp: int) -> int:
+	return current_pp.get(move_id, max_pp) as int
+
+
+# --- Turn denial ---
+
+func deny_turn() -> void:
+	_turn_denied = true
+
+
+func is_turn_denied() -> bool:
+	return _turn_denied
+
+
+func clear_turn_denied() -> void:
+	_turn_denied = false
+
+
+# --- Condition modifiers ---
+
+func add_condition_modifier(stat: String, multiplier: float, source_id: String) -> void:
+	if not condition_modifiers.has(stat):
+		condition_modifiers[stat] = []
+	var mod_list: Array = condition_modifiers[stat] as Array
+	mod_list.append({"multiplier": multiplier, "source": source_id})
+
+
+func remove_condition_modifier(stat: String, source_id: String) -> void:
+	if not condition_modifiers.has(stat):
+		return
+	var mod_list: Array = condition_modifiers[stat] as Array
+	for i: int in range(mod_list.size() - 1, -1, -1):
+		var entry: Dictionary = mod_list[i] as Dictionary
+		if entry.get("source", "") == source_id:
+			mod_list.remove_at(i)
+	if mod_list.is_empty():
+		condition_modifiers.erase(stat)
 
 
 # --- Combat helpers ---

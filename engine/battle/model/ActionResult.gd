@@ -9,3 +9,5 @@ var healed: int = 0
 var stat_name: String = ""
 var stat_delta: int = 0
 var fainted: bool = false
+var crit: bool = false
+var turn_denied: bool = false

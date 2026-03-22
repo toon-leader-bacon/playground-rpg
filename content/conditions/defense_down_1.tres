@@ -1,0 +1,11 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://schema/battle/ConditionConfig.gd" id="1_cc"]
+
+[resource]
+script = ExtResource("1_cc")
+id = "defense_down_1"
+display_name = "Defense Down"
+stat_modifiers = [{"stat": "defense", "multiplier": 0.75}]
+duration_type = 0
+duration = -1

@@ -1,0 +1,22 @@
+[gd_resource type="Resource" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://schema/monsters/MoveConfig.gd" id="1_mc"]
+[ext_resource type="Script" path="res://schema/battle/EffectEntry.gd" id="2_ee"]
+
+[sub_resource type="Resource" id="EffectEntry_rain"]
+script = ExtResource("2_ee")
+chance = 1.0
+effect_type = "set_weather"
+weather = 1
+weather_duration = 5
+
+[resource]
+script = ExtResource("1_mc")
+id = "rain_dance"
+display_name = "Rain Dance"
+type_tag = 3
+move_power = 0
+accuracy = -1.0
+pp = 5
+target_mode = 2
+post_effects = [SubResource("EffectEntry_rain")]

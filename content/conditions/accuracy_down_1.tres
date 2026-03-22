@@ -1,0 +1,11 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://schema/battle/ConditionConfig.gd" id="1_cc"]
+
+[resource]
+script = ExtResource("1_cc")
+id = "accuracy_down_1"
+display_name = "Accuracy Down"
+stat_modifiers = [{"stat": "accuracy", "multiplier": 0.75}]
+duration_type = 0
+duration = -1

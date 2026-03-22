@@ -27,7 +27,7 @@ func test_battle_ends_and_one_team_wins() -> void:
 	var e1: MonsterInstance = MonsterInstance.create(_make_config("e1", 1, 1, 1, 1), 1)
 
 	var move_lib: Dictionary[String, MoveConfig] = {
-		"nuke": _make_move("nuke", 100, MoveConfig.Effect.NONE),
+		"nuke": _make_move("nuke", 100),
 	}
 	p0.config.move_ids = ["nuke"]
 	p1.config.move_ids = ["nuke"]
@@ -61,7 +61,7 @@ func test_enemy_team_wins() -> void:
 	var e1: MonsterInstance = MonsterInstance.create(_make_config("e1", 9999, 999, 1, 999), 1)
 
 	var move_lib: Dictionary[String, MoveConfig] = {
-		"nuke": _make_move("nuke", 100, MoveConfig.Effect.NONE),
+		"nuke": _make_move("nuke", 100),
 	}
 	p0.config.move_ids = ["nuke"]
 	p1.config.move_ids = ["nuke"]
@@ -90,7 +90,7 @@ func test_combatants_initialized_fires_with_all_four_names() -> void:
 	var e1: MonsterInstance = MonsterInstance.create(_make_config("delta", 50, 10, 10, 10), 1)
 
 	var move_lib: Dictionary[String, MoveConfig] = {
-		"nuke": _make_move("nuke", 100, MoveConfig.Effect.NONE),
+		"nuke": _make_move("nuke", 100),
 	}
 	p0.config.move_ids = ["nuke"]
 	p1.config.move_ids = ["nuke"]
@@ -138,7 +138,7 @@ func test_fainted_monster_skipped_next_turn() -> void:
 	var e1: MonsterInstance = MonsterInstance.create(_make_config("e1", 1, 1, 1, 1), 1)
 
 	var move_lib: Dictionary[String, MoveConfig] = {
-		"nuke": _make_move("nuke", 100, MoveConfig.Effect.NONE),
+		"nuke": _make_move("nuke", 100),
 	}
 	p0.config.move_ids = ["nuke"]
 	p1.config.move_ids = ["nuke"]
@@ -172,7 +172,7 @@ func test_battle_ended_signal_fires() -> void:
 	var e1: MonsterInstance = MonsterInstance.create(_make_config("e1", 1, 1, 1, 1), 1)
 
 	var move_lib: Dictionary[String, MoveConfig] = {
-		"nuke": _make_move("nuke", 100, MoveConfig.Effect.NONE),
+		"nuke": _make_move("nuke", 100),
 	}
 	p0.config.move_ids = ["nuke"]
 	p1.config.move_ids = ["nuke"]
@@ -210,13 +210,14 @@ func _make_config(id: String, hp: int, atk: int, def_val: int, spd: int) -> Mons
 	return config
 
 
-func _make_move(id: String, power: int, effect: MoveConfig.Effect) -> MoveConfig:
+func _make_move(id: String, power: int) -> MoveConfig:
 	var move := MoveConfig.new()
 	move.id = id
 	move.display_name = id.capitalize()
 	move.type_tag = TypeTag.Type.NORMAL
-	move.power = power
+	move.move_power = power
 	move.accuracy = 1.0
-	move.effect = effect
-	move.target_type = MoveConfig.TargetType.SINGLE_ENEMY
+	if power > 0:
+		move.damage_formula = "move_power * caster.attack / target.defense"
+	move.target_mode = MoveConfig.TargetType.SINGLE_ENEMY
 	return move

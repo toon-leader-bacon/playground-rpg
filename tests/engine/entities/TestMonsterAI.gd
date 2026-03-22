@@ -134,7 +134,7 @@ func _make_lib(move_ids: Array[String]) -> Dictionary[String, MoveConfig]:
 		var m := MoveConfig.new()
 		m.id = id
 		m.display_name = id
-		m.power = 10
+		m.move_power = 10
 		m.accuracy = 100
 		lib[id] = m
 	return lib

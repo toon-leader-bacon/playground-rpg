@@ -1,0 +1,21 @@
+[gd_resource type="Resource" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://schema/monsters/MoveConfig.gd" id="1_mc"]
+[ext_resource type="Script" path="res://schema/battle/EffectEntry.gd" id="2_ee"]
+
+[sub_resource type="Resource" id="EffectEntry_burn"]
+script = ExtResource("2_ee")
+chance = 1.0
+target = "target"
+condition_id = "burn"
+
+[resource]
+script = ExtResource("1_mc")
+id = "will_o_wisp"
+display_name = "Will-O-Wisp"
+type_tag = 2
+move_power = 0
+accuracy = 0.85
+pp = 15
+target_mode = 0
+post_effects = [SubResource("EffectEntry_burn")]

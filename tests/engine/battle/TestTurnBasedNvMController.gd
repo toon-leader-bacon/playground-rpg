@@ -28,7 +28,7 @@ func test_player_team_wins_when_overpowered() -> void:
 	for i: int in range(7):
 		enemy_team.append(MonsterInstance.create(_make_config("e" + str(i), 1, 1, 1, 1), 1))
 
-	var move_lib: Dictionary[String, MoveConfig] = {"nuke": _make_move("nuke", 100, MoveConfig.Effect.NONE)}
+	var move_lib: Dictionary[String, MoveConfig] = {"nuke": _make_move("nuke", 100)}
 	for m: MonsterInstance in player_team + enemy_team:
 		m.config.move_ids = ["nuke"]
 
@@ -59,7 +59,7 @@ func test_enemy_team_wins_when_overpowered() -> void:
 	for i: int in range(7):
 		enemy_team.append(MonsterInstance.create(_make_config("e" + str(i), 9999, 999, 1, 999), 1))
 
-	var move_lib: Dictionary[String, MoveConfig] = {"nuke": _make_move("nuke", 100, MoveConfig.Effect.NONE)}
+	var move_lib: Dictionary[String, MoveConfig] = {"nuke": _make_move("nuke", 100)}
 	for m: MonsterInstance in player_team + enemy_team:
 		m.config.move_ids = ["nuke"]
 
@@ -87,7 +87,7 @@ func test_combatants_initialized_signal_contains_correct_names_and_hps() -> void
 		MonsterInstance.create(_make_config("epsilon", 40, 10, 10, 10), 1),
 	]
 
-	var move_lib: Dictionary[String, MoveConfig] = {"nuke": _make_move("nuke", 100, MoveConfig.Effect.NONE)}
+	var move_lib: Dictionary[String, MoveConfig] = {"nuke": _make_move("nuke", 100)}
 	for m: MonsterInstance in player_team + enemy_team:
 		m.config.move_ids = ["nuke"]
 
@@ -133,7 +133,7 @@ func test_fainted_monsters_are_skipped_in_subsequent_turns() -> void:
 	for i: int in range(3):
 		enemy_team.append(MonsterInstance.create(_make_config("e" + str(i), 1, 1, 1, 1), 1))
 
-	var move_lib: Dictionary[String, MoveConfig] = {"nuke": _make_move("nuke", 100, MoveConfig.Effect.NONE)}
+	var move_lib: Dictionary[String, MoveConfig] = {"nuke": _make_move("nuke", 100)}
 	for m: MonsterInstance in player_team + enemy_team:
 		m.config.move_ids = ["nuke"]
 
@@ -162,7 +162,7 @@ func test_battle_ended_signal_fires() -> void:
 		MonsterInstance.create(_make_config("e0", 1, 1, 1, 1), 1),
 	]
 
-	var move_lib: Dictionary[String, MoveConfig] = {"nuke": _make_move("nuke", 100, MoveConfig.Effect.NONE)}
+	var move_lib: Dictionary[String, MoveConfig] = {"nuke": _make_move("nuke", 100)}
 	player_team[0].config.move_ids = ["nuke"]
 	enemy_team[0].config.move_ids = ["nuke"]
 
@@ -187,7 +187,7 @@ func test_single_player_vs_single_enemy_works_as_1v1() -> void:
 		MonsterInstance.create(_make_config("e0", 1, 1, 1, 1), 1),
 	]
 
-	var move_lib: Dictionary[String, MoveConfig] = {"nuke": _make_move("nuke", 100, MoveConfig.Effect.NONE)}
+	var move_lib: Dictionary[String, MoveConfig] = {"nuke": _make_move("nuke", 100)}
 	player_team[0].config.move_ids = ["nuke"]
 	enemy_team[0].config.move_ids = ["nuke"]
 
@@ -218,13 +218,14 @@ func _make_config(id: String, hp: int, atk: int, def_val: int, spd: int) -> Mons
 	return config
 
 
-func _make_move(id: String, power: int, effect: MoveConfig.Effect) -> MoveConfig:
+func _make_move(id: String, power: int) -> MoveConfig:
 	var move := MoveConfig.new()
 	move.id = id
 	move.display_name = id.capitalize()
 	move.type_tag = TypeTag.Type.NORMAL
-	move.power = power
+	move.move_power = power
 	move.accuracy = 1.0
-	move.effect = effect
-	move.target_type = MoveConfig.TargetType.SINGLE_ENEMY
+	if power > 0:
+		move.damage_formula = "move_power * caster.attack / target.defense"
+	move.target_mode = MoveConfig.TargetType.SINGLE_ENEMY
 	return move

@@ -1,0 +1,13 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://schema/battle/ConditionConfig.gd" id="1_cc"]
+
+[resource]
+script = ExtResource("1_cc")
+id = "sleep"
+display_name = "Sleep"
+trigger_event = "battle_actor_turn_started"
+turn_denial_chance = 1.0
+duration_type = 2
+duration_min = 1
+duration_max = 3

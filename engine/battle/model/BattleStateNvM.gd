@@ -6,6 +6,8 @@ extends BattleState
 
 var player_team: Array[MonsterInstance] = []
 var enemy_team: Array[MonsterInstance] = []
+var weather: int = WeatherType.Type.NONE
+var weather_duration: int = -1  # -1 = permanent/no weather active
 
 
 ## Returns the MonsterInstance for an actor_id like "player_2" or "enemy_5".
@@ -33,3 +35,19 @@ func get_alive(team_id: String) -> Array[MonsterInstance]:
 ## Returns true if every member of the given team is fainted.
 func is_team_wiped(team_id: String) -> bool:
 	return get_alive(team_id).is_empty()
+
+
+## Decrement weather duration. Clears weather when countdown reaches 0.
+func advance_weather() -> void:
+	if weather_duration < 0:
+		return
+	weather_duration -= 1
+	if weather_duration <= 0:
+		weather = WeatherType.Type.NONE
+		weather_duration = -1
+
+
+## Set weather with a given duration (-1 = permanent).
+func set_weather(type: int, duration: int) -> void:
+	weather = type
+	weather_duration = duration

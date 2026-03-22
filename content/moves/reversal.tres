@@ -1,0 +1,14 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://schema/monsters/MoveConfig.gd" id="1_mc"]
+
+[resource]
+script = ExtResource("1_mc")
+id = "reversal"
+display_name = "Reversal"
+type_tag = 1
+move_power = 1
+accuracy = 1.0
+pp = 15
+target_mode = 0
+damage_formula = "200.0 * (1.0 - caster.hp / caster.max_hp) * caster.attack / target.defense"

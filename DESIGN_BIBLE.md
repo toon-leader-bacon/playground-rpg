@@ -27,6 +27,10 @@ The ultimate vision: press a button, receive a playable JRPG. Each run produces 
 | **Chrono Trigger** | Smooth non-tile movement on tile maps, encounter design philosophy |
 | **Skies of Arcadia** | 2D map-based positional combat (distant stretch goal) |
 | **Fire Emblem** | Positioning as a core decision (distant stretch goal) |
+| **Persona** |  |
+| **Xenoblade** |  |
+| **Darkest Dungeon** | Map generation |
+| **Slay the Spire** | Creative moves (cards), relics that modify combat meaningfully, and distinct enemies/ bosses |
 
 **Core appeal to optimize for:** Exploration novelty and mechanical depth — not narrative. Players engage because they want to discover new zones and encounter interesting monsters, not to follow a story. Story is out of scope.
 
@@ -38,7 +42,7 @@ These are the known "dials" the engine must support. Each is a toggleable/tunabl
 
 | Axis | MVP Default | Future Options |
 |---|---|---|
-| **Combat style** | 1v1 turn-based (Pokémon) | ATB 1v1, NvN turn-based, NvN ATB |
+| **Combat style** | 1v1 turn-based (Pokémon) | ~~ATB 1v1~~, NvN turn-based ✓, NvN ATB ✓ |
 | **Map movement** | Tile-locked | Free/smooth (Chrono Trigger style) |
 | **World structure** | Linked tile zones | Overworld + embedded sub-zones |
 | **Stat system** | Fixed set (HP, ATK, DEF, SPD) | Configurable stat list per run |
@@ -55,13 +59,13 @@ These are the known "dials" the engine must support. Each is a toggleable/tunabl
 The MVP must prove the architecture works, not deliver a complete game. Success means:
 
 - [ ] At least **2 zones** exist, each with distinct enemy pools and visual identity
-- [1] At least **2 combat system modes** are implemented and swappable via config (e.g., standard 1v1 and ATB 1v1) (PARTIALLY COMPLETED)
+- [x] At least **2 combat system modes** are implemented and swappable via config — Turn-based NvM (Pokemon-style) and ATB NvM Wait (FF-style), selected via `BattleConfig.tres`
 - [x] A monster can be **fully defined by a `.tres` config** (stats, moves, type, encounter weight)
 - [1] A monster `.tres` can be **fully generated** (PARTIALLY COMPLETED)
 - [ ] A map zone can be **fully defined by config** (tileset, encounter table, connections to other zones)
 - [ ] The player can: enter a zone, trigger an encounter, battle, win/lose, return to the world, reach a simple end condition
 - [ ] Game state can be **saved and loaded** via serialization of the Model layer
-- [ ] Swapping which combat system is active requires **only a config change**, no code change
+- [x] Swapping which combat system is active requires **only a config change** — set `config_id` in `BattleScene` Inspector or point at a different `.tres` in `content/battles/`
 
 ---
 

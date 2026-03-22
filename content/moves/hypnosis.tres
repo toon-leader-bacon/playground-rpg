@@ -1,0 +1,21 @@
+[gd_resource type="Resource" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://schema/monsters/MoveConfig.gd" id="1_mc"]
+[ext_resource type="Script" path="res://schema/battle/EffectEntry.gd" id="2_ee"]
+
+[sub_resource type="Resource" id="EffectEntry_sleep"]
+script = ExtResource("2_ee")
+chance = 1.0
+target = "target"
+condition_id = "sleep"
+
+[resource]
+script = ExtResource("1_mc")
+id = "hypnosis"
+display_name = "Hypnosis"
+type_tag = 8
+move_power = 0
+accuracy = 0.6
+pp = 20
+target_mode = 0
+post_effects = [SubResource("EffectEntry_sleep")]

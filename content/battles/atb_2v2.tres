@@ -1,0 +1,11 @@
+[gd_resource type="Resource" format=3 uid="uid://battle_cfg_atb2v2"]
+
+[ext_resource type="Script" path="res://schema/battle/BattleConfig.gd" id="1_cfg"]
+
+[resource]
+script = ExtResource("1_cfg")
+style = 1
+player_monster_ids = ["fire_lizard", "stone_golem"]
+enemy_monster_ids = ["stone_golem", "fire_lizard"]
+monster_level = 5
+atb_speed_multiplier = 1.0

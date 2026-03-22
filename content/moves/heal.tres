@@ -1,0 +1,15 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://schema/monsters/MoveConfig.gd" id="1_mc"]
+
+[resource]
+script = ExtResource("1_mc")
+id = "heal"
+display_name = "Heal"
+type_tag = 1
+move_power = 0
+accuracy = 1.0
+pp = 10
+target_mode = 2
+accuracy_node = "always_hit"
+heal_formula = "target.max_hp * 0.5"

@@ -141,18 +141,14 @@ func _execute_action(
 		_log(state, "  %s used %s — but it missed!" % [user.config.display_name, move.display_name])
 		return
 
-	match move.effect:
-		MoveConfig.Effect.NONE:
-			if move.power > 0:
-				_apply_damage(state, user, target, move)
-			else:
-				_log(state, "  %s used %s (no effect)" % [user.config.display_name, move.display_name])
-		MoveConfig.Effect.HEAL:
-			_apply_heal(state, user, move)
-		MoveConfig.Effect.BUFF_SPEED_SELF:
-			_apply_stat_change(state, user.config.display_name, user, "speed", 1, move.display_name)
-		MoveConfig.Effect.DEBUFF_SPEED_TARGET:
-			_apply_stat_change(state, user.config.display_name, target, "speed", -1, move.display_name)
+	if move.move_power > 0 and move.damage_formula != "":
+		_apply_damage(state, user, target, move)
+	elif move.heal_formula != "":
+		_apply_heal(state, user, move)
+	elif move.move_power > 0:
+		_apply_damage(state, user, target, move)
+	else:
+		_log(state, "  %s used %s (no effect)" % [user.config.display_name, move.display_name])
 
 
 func _apply_damage(
@@ -175,7 +171,7 @@ func _apply_damage(
 
 func _apply_heal(state: BattleState, user: MonsterInstance, move: MoveConfig) -> void:
 	var before: int = user.current_hp
-	user.restore_hp(move.power)
+	user.restore_hp(move.move_power)
 	var healed: int = user.current_hp - before
 	_log(state, "  %s used %s → restored %d HP (%d/%d HP)" % [
 		user.config.display_name, move.display_name, healed,
@@ -201,13 +197,13 @@ func _apply_stat_change(
 	stat_changed.emit(target.config.display_name, stat, delta, total)
 
 
-## Damage formula: max(1, (power * atk) / (20 + def))
+## Damage formula: max(1, (move_power * atk) / (20 + def))
 static func _calculate_damage(
 	attacker: MonsterInstance,
 	move: MoveConfig,
 	defender: MonsterInstance
 ) -> int:
-	var numerator: int = move.power * attacker.attack()
+	var numerator: int = move.move_power * attacker.attack()
 	var denominator: int = 20 + defender.defense()
 	return max(1, numerator / denominator)
 

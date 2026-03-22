@@ -1,0 +1,28 @@
+[gd_resource type="Resource" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://schema/monsters/MoveConfig.gd" id="1_mc"]
+[ext_resource type="Script" path="res://schema/battle/EffectEntry.gd" id="2_ee"]
+
+[sub_resource type="Resource" id="EffectEntry_def_down"]
+script = ExtResource("2_ee")
+chance = 1.0
+target = "caster"
+condition_id = "defense_down_1"
+
+[sub_resource type="Resource" id="EffectEntry_spdef_down"]
+script = ExtResource("2_ee")
+chance = 1.0
+target = "caster"
+condition_id = "special_defense_down_1"
+
+[resource]
+script = ExtResource("1_mc")
+id = "close_combat"
+display_name = "Close Combat"
+type_tag = 1
+move_power = 120
+accuracy = 1.0
+pp = 5
+target_mode = 0
+damage_formula = "move_power * caster.attack / target.defense"
+post_effects = [SubResource("EffectEntry_def_down"), SubResource("EffectEntry_spdef_down")]

@@ -1,0 +1,73 @@
+[gd_scene format=3 uid="uid://cgo1obd6oc5hy"]
+
+[ext_resource type="Script" path="res://engine/battle/view/BattleScene.gd" id="1_bsmaster"]
+
+[node name="BattleScene" type="Control" unique_id=1033999471]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_bsmaster")
+
+[node name="EnemyRow" type="HBoxContainer" parent="." unique_id=1475508377]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.25
+
+[node name="MessageBox" type="RichTextLabel" parent="." unique_id=633781968]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.25
+anchor_right = 0.62
+anchor_bottom = 0.75
+scroll_following = true
+
+[node name="ActionArea" type="VBoxContainer" parent="." unique_id=1575962176]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.62
+anchor_top = 0.25
+anchor_right = 1.0
+anchor_bottom = 0.75
+
+[node name="ActionMenu" type="VBoxContainer" parent="ActionArea" unique_id=2004061552]
+visible = false
+layout_mode = 2
+
+[node name="ActorLabel" type="Label" parent="ActionArea/ActionMenu" unique_id=330252572]
+layout_mode = 2
+text = "Choose a move:"
+
+[node name="MoveButton0" type="Button" parent="ActionArea/ActionMenu" unique_id=500028741]
+layout_mode = 2
+text = "Move 0"
+
+[node name="MoveButton1" type="Button" parent="ActionArea/ActionMenu" unique_id=146598383]
+layout_mode = 2
+text = "Move 1"
+
+[node name="MoveButton2" type="Button" parent="ActionArea/ActionMenu" unique_id=1293979668]
+layout_mode = 2
+text = "Move 2"
+
+[node name="MoveButton3" type="Button" parent="ActionArea/ActionMenu" unique_id=940921646]
+layout_mode = 2
+text = "Move 3"
+
+[node name="TargetMenu" type="VBoxContainer" parent="ActionArea" unique_id=631043326]
+visible = false
+layout_mode = 2
+
+[node name="TargetActorLabel" type="Label" parent="ActionArea/TargetMenu" unique_id=515368028]
+layout_mode = 2
+text = "Choose a target:"
+
+[node name="PlayerRow" type="HBoxContainer" parent="." unique_id=721897535]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.75
+anchor_right = 1.0
+anchor_bottom = 1.0

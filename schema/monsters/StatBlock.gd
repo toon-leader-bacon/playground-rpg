@@ -5,6 +5,8 @@ extends Resource
 @export var attack: int = 5
 @export var defense: int = 5
 @export var speed: int = 5
+@export var special_attack: int = 5
+@export var special_defense: int = 5
 
 
 func serialize() -> Dictionary:
@@ -13,6 +15,8 @@ func serialize() -> Dictionary:
 		"attack": attack,
 		"defense": defense,
 		"speed": speed,
+		"special_attack": special_attack,
+		"special_defense": special_defense,
 	}
 
 
@@ -22,4 +26,6 @@ static func deserialize(data: Dictionary) -> StatBlock:
 	s.attack = data.get("attack", 5)
 	s.defense = data.get("defense", 5)
 	s.speed = data.get("speed", 5)
+	s.special_attack = data.get("special_attack", 5)
+	s.special_defense = data.get("special_defense", 5)
 	return s

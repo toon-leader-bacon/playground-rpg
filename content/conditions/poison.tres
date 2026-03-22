@@ -1,0 +1,13 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://schema/battle/ConditionConfig.gd" id="1_cc"]
+
+[resource]
+script = ExtResource("1_cc")
+id = "poison"
+display_name = "Poison"
+trigger_event = "battle_actor_turn_started"
+periodic_damage_formula = "target.max_hp * 0.0625"
+turn_denial_chance = 0.0
+duration_type = 0
+duration = -1

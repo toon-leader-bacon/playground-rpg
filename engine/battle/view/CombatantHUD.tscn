@@ -1,0 +1,30 @@
+[gd_scene format=3 uid="uid://combatant_hud"]
+
+[ext_resource type="Script" path="res://engine/battle/view/CombatantHUD.gd" id="1_hud"]
+
+[node name="CombatantHUD" type="VBoxContainer"]
+script = ExtResource("1_hud")
+custom_minimum_size = Vector2(180, 0)
+
+[node name="NameLabel" type="Label" parent="."]
+text = "Name"
+
+[node name="HPBar" type="ProgressBar" parent="."]
+custom_minimum_size = Vector2(160, 18)
+max_value = 100.0
+value = 100.0
+
+[node name="HPText" type="Label" parent="."]
+text = "100 / 100"
+
+[node name="ATBContainer" type="VBoxContainer" parent="."]
+visible = false
+
+[node name="ATBBar" type="ProgressBar" parent="ATBContainer"]
+custom_minimum_size = Vector2(160, 12)
+max_value = 100.0
+value = 0.0
+
+[node name="ATBLabel" type="Label" parent="ATBContainer"]
+text = "ATB"
+theme_override_font_sizes/font_size = 10

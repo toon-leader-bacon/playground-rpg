@@ -9,6 +9,8 @@ max_hp = 90
 attack = 40
 defense = 75
 speed = 15
+special_attack = 30
+special_defense = 70
 
 [resource]
 script = ExtResource("2_mc")

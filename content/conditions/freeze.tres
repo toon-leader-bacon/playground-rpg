@@ -1,0 +1,14 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://schema/battle/ConditionConfig.gd" id="1_cc"]
+
+[resource]
+script = ExtResource("1_cc")
+id = "freeze"
+display_name = "Freeze"
+trigger_event = "battle_actor_turn_started"
+turn_denial_chance = 1.0
+duration_type = 0
+duration = -1
+removal_trigger_event = "battle_move_hit"
+removal_move_type = 2
