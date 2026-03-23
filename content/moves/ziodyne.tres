@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="MoveConfig" format=3]
+
+[ext_resource type="Script" path="res://schema/battle/EffectEntry.gd" id="1_o8hcd"]
+[ext_resource type="Script" path="res://schema/monsters/MoveConfig.gd" id="2_e8fyc"]
+
+[resource]
+script = ExtResource("2_e8fyc")
+id = "ziodyne"
+display_name = "Ziodyne"
+type_tag = 6
+move_power = 160
+pp = 5
+damage_formula = "move_power * caster.special_attack / target.special_defense"

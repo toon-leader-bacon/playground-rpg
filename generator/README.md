@@ -87,6 +87,36 @@ Run `--list-recipes` to see the current list. As of initial setup:
 | `stat_ff_tank` | FF-simple stats, tank archetype |
 | `stat_fire_emblem_balanced` | Fire Emblem stats, Gaussian distribution (350 pts) |
 | `stat_diablo_balanced` | Diablo primary stats, Gaussian distribution (100 pts) |
+| `move_scratch_i` | Scratch — Tier I physical attack (40 power, 35 PP) |
+| `move_scratch_ii` | Rake — Tier II physical attack (65 power, 20 PP, elevated crit) |
+| `move_scratch_iii` | Rend — Tier III physical attack (100 power, 10 PP, high crit, defense-down) |
+
+---
+
+## Move Recipes
+
+Move recipes follow the FF Fire/Fira/Firaga progression model: same category, escalating power, cost, and secondary effects. Use `--out-prefix` to control the output filename.
+
+```bash
+# Generate the full scratch series into content/moves/
+godot --headless -s res://generator/GeneratorMain.gd -- \
+    --recipe move_scratch_i --out-prefix scratch_i --out-dir res://content/moves/
+godot --headless -s res://generator/GeneratorMain.gd -- \
+    --recipe move_scratch_ii --out-prefix scratch_ii --out-dir res://content/moves/
+godot --headless -s res://generator/GeneratorMain.gd -- \
+    --recipe move_scratch_iii --out-prefix scratch_iii --out-dir res://content/moves/
+```
+
+The factory lives in `generator/moves/MoveFactory.gd`. Build methods:
+
+| Method | Formula used | Use case |
+|---|---|---|
+| `build_physical_attack` | `move_power * caster.attack / target.defense` | Normal physical hit |
+| `build_special_attack` | `move_power * caster.special_attack / target.special_defense` | Elemental / magic hit |
+| `build_status` | none | Condition / field effect moves |
+| `build_heal` | `target.max_hp * fraction` | Self-healing moves |
+
+All methods accept `move_power`, `accuracy`, `pp`, `type_tag`, `post_effects`, and `crit_rate_formula` as optional parameters with sensible defaults.
 
 ---
 

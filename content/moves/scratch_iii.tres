@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="MoveConfig" format=3]
+
+[ext_resource type="Script" path="res://schema/battle/EffectEntry.gd" id="1_j16vi"]
+[ext_resource type="Script" path="res://schema/monsters/MoveConfig.gd" id="2_ix0ou"]
+
+[sub_resource type="Resource" id="Resource_bak4j"]
+script = ExtResource("1_j16vi")
+chance = 0.2
+condition_id = "defense_down_1"
+
+[resource]
+script = ExtResource("2_ix0ou")
+id = "scratch_iii"
+display_name = "Rend"
+move_power = 100
+accuracy = 0.9
+damage_formula = "move_power * caster.attack / target.defense"
+crit_rate_formula = "0.25"
+post_effects = Array[ExtResource("1_j16vi")]([SubResource("Resource_bak4j")])

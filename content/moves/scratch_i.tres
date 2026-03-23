@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="MoveConfig" format=3]
+
+[ext_resource type="Script" path="res://schema/battle/EffectEntry.gd" id="1_nuu8d"]
+[ext_resource type="Script" path="res://schema/monsters/MoveConfig.gd" id="2_2lnhj"]
+
+[resource]
+script = ExtResource("2_2lnhj")
+id = "scratch_i"
+display_name = "Scratch"
+move_power = 40
+pp = 35
+damage_formula = "move_power * caster.attack / target.defense"

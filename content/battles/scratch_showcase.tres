@@ -1,0 +1,11 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://schema/battle/BattleConfig.gd" id="1_bc"]
+
+[resource]
+script = ExtResource("1_bc")
+style = 0
+player_monster_ids = Array[String](["claw_beast", "claw_beast"])
+enemy_monster_ids = Array[String](["claw_beast", "claw_beast"])
+monster_level = 10
+atb_speed_multiplier = 1.0

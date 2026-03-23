@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cgo1obd6oc5hy"]
 
-[ext_resource type="Script" path="res://engine/battle/view/BattleScene.gd" id="1_bsmaster"]
+[ext_resource type="Script" uid="uid://hkelel5ggd86" path="res://engine/battle/view/BattleScene.gd" id="1_bsmaster"]
 
 [node name="BattleScene" type="Control" unique_id=1033999471]
 layout_mode = 3
@@ -10,6 +10,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_bsmaster")
+config_id = "scratch_showcase"
 
 [node name="EnemyRow" type="HBoxContainer" parent="." unique_id=1475508377]
 layout_mode = 1

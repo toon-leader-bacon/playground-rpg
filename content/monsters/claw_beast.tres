@@ -1,0 +1,25 @@
+[gd_resource type="Resource" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://schema/monsters/StatBlock.gd" id="1_sb"]
+[ext_resource type="Script" path="res://schema/monsters/MonsterConfig.gd" id="2_mc"]
+
+[sub_resource type="Resource" id="StatBlock_1"]
+script = ExtResource("1_sb")
+max_hp = 65
+attack = 75
+defense = 45
+speed = 60
+special_attack = 25
+special_defense = 35
+
+[resource]
+script = ExtResource("2_mc")
+id = "claw_beast"
+display_name = "Claw Beast"
+base_stats = SubResource("StatBlock_1")
+type_tags = Array[int]([1])
+move_ids = Array[String](["scratch_i", "scratch_ii", "scratch_iii"])
+ai_style = 0
+base_xp_yield = 30
+encounter_weight = 1.0
+sprite_path = ""

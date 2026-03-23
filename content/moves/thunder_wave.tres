@@ -18,4 +18,5 @@ move_power = 0
 accuracy = 0.9
 pp = 20
 target_mode = 0
+accuracy_node = "always_hit"
 post_effects = [SubResource("EffectEntry_paralysis")]
