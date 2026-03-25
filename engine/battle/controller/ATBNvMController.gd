@@ -10,6 +10,7 @@ extends RefCounted
 ## External driver calls tick(delta) each frame (via ATBTickDriver).
 ## The internal _ticked signal wakes the coroutine after each tick.
 
+const _MoveFilter = preload("res://engine/battle/scheduler/MoveFilter.gd")
 const _ATBScheduler = preload("res://engine/battle/scheduler/ATBScheduler.gd")
 const _BattleStateNvM = preload("res://engine/battle/model/BattleStateNvM.gd")
 const _DecisionCollector = preload("res://engine/battle/scheduler/DecisionCollector.gd")
@@ -190,10 +191,10 @@ func tick(delta: float) -> void:
 
 
 ## Called by BattleManager to forward the player's move choice.
-func submit_player_action(actor_id: String, move_index: int) -> void:
+func submit_player_action(actor_id: String, move_id: String) -> void:
 	var idx: int = _player_index_from_id(actor_id)
 	if idx >= 0 and idx < _player_controllers.size():
-		_player_controllers[idx].select_move(move_index)
+		_player_controllers[idx].select_move(move_id)
 
 
 ## Called by BattleManager after player selects a target.
@@ -206,19 +207,27 @@ func submit_player_target(actor_id: String, target_id: String) -> void:
 # --- Private ---
 
 func _handle_player_turn(actor_id: String, actor: MonsterInstance) -> void:
+	var available: Array[String] = _MoveFilter.build_available(actor, _move_library)
+	if available.is_empty():
+		EventBus.battle_turn_denied.emit(actor_id)
+		return
 	var idx: int = _player_index_from_id(actor_id)
 	var pc: PlayerController = _player_controllers[idx]
 	var collector: DecisionCollector = _DecisionCollector.create_all_submitted([actor_id])
 	pc.bind(actor_id, actor, collector, _move_library, _make_enemy_target_resolver())
-	waiting_for_input.emit(actor_id, _build_move_list(actor))
+	waiting_for_input.emit(actor_id, _build_move_list(available))
 	if not collector.is_committed:
 		await collector.committed
 	_runner.run(collector.queue, _state, _rng)
 
 
 func _handle_enemy_turn(actor_id: String, actor: MonsterInstance) -> void:
+	var available: Array[String] = _MoveFilter.build_available(actor, _move_library)
+	if available.is_empty():
+		EventBus.battle_turn_denied.emit(actor_id)
+		return
 	var action: Action = _enemy_ai.choose_action(
-		actor_id, actor, _move_library, _make_player_target_resolver(), _rng
+		actor_id, actor, _move_library, _make_player_target_resolver(), _rng, available
 	)
 	var queue: Array[Action] = []
 	if action != null:
@@ -258,11 +267,10 @@ func _make_enemy_target_resolver() -> Callable:
 		return d
 
 
-func _build_move_list(monster: MonsterInstance) -> Array[MoveOption]:
+func _build_move_list(available_ids: Array[String]) -> Array[MoveOption]:
 	var moves: Array[MoveOption] = []
-	for i: int in range(monster.config.move_ids.size()):
-		var move_id: String = monster.config.move_ids[i]
+	for move_id: String in available_ids:
 		var move: MoveConfig = _move_library.get(move_id, null) as MoveConfig
 		var display: String = move.display_name if move != null else move_id
-		moves.append(MoveOption.new(i, display))
+		moves.append(MoveOption.new(move_id, display))
 	return moves

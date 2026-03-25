@@ -13,13 +13,15 @@ extends RefCounted
 
 
 ## Select an action for the given actor. Must be overridden by subclasses.
+## available_ids: pre-filtered move ID list from MoveFilter; empty means use all moves.
 ## Returns null if no valid action can be constructed.
 func choose_action(
 	actor_id: String,
 	actor: MonsterInstance,
 	move_library: Dictionary[String, MoveConfig],
 	target_resolver: Callable,
-	rng: RandomNumberGenerator
+	rng: RandomNumberGenerator,
+	available_ids: Array[String] = []
 ) -> Action:
 	push_error("MonsterAI.choose_action() must be overridden by a subclass.")
 	return null

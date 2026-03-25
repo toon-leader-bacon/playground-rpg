@@ -56,7 +56,10 @@ static func recoil_move(rng: RandomNumberGenerator) -> Resource:
 static func always_hit_move(rng: RandomNumberGenerator) -> Resource:
 	var factory := _MoveFactory.new(rng)
 	var move: MoveConfig = factory.build_physical_attack("swift_ex", "Swift", 60, 1.0, 20)
-	move.accuracy_node = "always_hit"
+	var acc_override := NodeOverrideEntry.new()
+	acc_override.node_id = "ACCURACY_CHECK"
+	acc_override.override_tag = "always_hit"
+	move.node_overrides = [acc_override]
 	return move
 
 
@@ -69,12 +72,15 @@ static func weather_accuracy_move(rng: RandomNumberGenerator) -> Resource:
 	var move: MoveConfig = factory.build_special_attack(
 		"blizzard_ex", "Blizzard", 110, 0.7, 5, TypeTag.Type.ICE, post_fx
 	)
-	move.accuracy_node = "weather_accuracy"
-	move.accuracy_node_arguments = [
+	var acc_override := NodeOverrideEntry.new()
+	acc_override.node_id = "ACCURACY_CHECK"
+	acc_override.override_tag = "weather_accuracy"
+	acc_override.args = {"entries": [
 		{"weather": WeatherType.Type.HAIL, "accuracy_formula": "100.0"},
 		{"weather": WeatherType.Type.SUN, "accuracy_formula": "30.0"},
 		{"weather": -1, "accuracy_formula": "70.0"},
-	]
+	]}
+	move.node_overrides = [acc_override]
 	return move
 
 
@@ -100,7 +106,10 @@ static func paralysis_move(rng: RandomNumberGenerator) -> Resource:
 		"thunder_wave_ex", "Thunder Wave", 1.0, 20, TypeTag.Type.ELECTRIC,
 		MoveConfig.TargetType.SINGLE_ENEMY, post_fx
 	)
-	move.accuracy_node = "always_hit"
+	var acc_override := NodeOverrideEntry.new()
+	acc_override.node_id = "ACCURACY_CHECK"
+	acc_override.override_tag = "always_hit"
+	move.node_overrides = [acc_override]
 	return move
 
 
@@ -209,5 +218,8 @@ static func speed_up_move(rng: RandomNumberGenerator) -> Resource:
 		"quick_step_ex", "Quick Step", 1.0, 20, TypeTag.Type.NORMAL,
 		MoveConfig.TargetType.SELF, post_fx
 	)
-	move.accuracy_node = "always_hit"
+	var acc_override := NodeOverrideEntry.new()
+	acc_override.node_id = "ACCURACY_CHECK"
+	acc_override.override_tag = "always_hit"
+	move.node_overrides = [acc_override]
 	return move

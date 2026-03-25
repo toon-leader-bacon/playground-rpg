@@ -30,14 +30,18 @@ func test_serialize_heal_move_round_trip() -> void:
 	move.id = "heal"
 	move.heal_formula = "target.max_hp * 0.5"
 	move.target_mode = MoveConfig.TargetType.SELF
-	move.accuracy_node = "always_hit"
+	var override := NodeOverrideEntry.new()
+	override.node_id = "ACCURACY_CHECK"
+	override.override_tag = "always_hit"
+	move.node_overrides = [override]
 
 	var restored: MoveConfig = MoveConfig.deserialize(move.serialize())
 
 	assert_str(restored.id).is_equal("heal")
 	assert_str(restored.heal_formula).is_equal("target.max_hp * 0.5")
 	assert_int(restored.target_mode).is_equal(MoveConfig.TargetType.SELF)
-	assert_str(restored.accuracy_node).is_equal("always_hit")
+	assert_int(restored.node_overrides.size()).is_equal(1)
+	assert_str(restored.node_overrides[0].override_tag).is_equal("always_hit")
 
 
 func test_target_mode_self_round_trips() -> void:
@@ -144,3 +148,77 @@ func test_pp_defaults_to_10() -> void:
 	var move := MoveConfig.new()
 
 	assert_int(move.pp).is_equal(10)
+
+
+# --- EdgeOverrideEntry serialize / deserialize ---
+
+func test_edge_override_entry_round_trip() -> void:
+	var entry := EdgeOverrideEntry.new()
+	entry.from_node = "APPLY_POST_EFFECTS"
+	entry.to_node = "APPLY_PRE_EFFECTS"
+	entry.condition_tag = "triple_kick_loop"
+	entry.args = {"key": "value"}
+
+	var restored: EdgeOverrideEntry = EdgeOverrideEntry.deserialize(entry.serialize())
+
+	assert_str(restored.from_node).is_equal("APPLY_POST_EFFECTS")
+	assert_str(restored.to_node).is_equal("APPLY_PRE_EFFECTS")
+	assert_str(restored.condition_tag).is_equal("triple_kick_loop")
+	assert_str(restored.args.get("key", "") as String).is_equal("value")
+
+
+func test_edge_override_entry_deep_copy_isolation() -> void:
+	var entry := EdgeOverrideEntry.new()
+	entry.from_node = "A"
+	entry.to_node = "B"
+	entry.args = {"x": 1}
+
+	var copy: EdgeOverrideEntry = entry.deep_copy()
+	copy.from_node = "Z"
+	copy.args["x"] = 99
+
+	assert_str(entry.from_node).is_equal("A")
+	assert_int(entry.args.get("x", -1) as int).is_equal(1)
+
+
+func test_edge_override_entry_deserialize_defaults() -> void:
+	var entry: EdgeOverrideEntry = EdgeOverrideEntry.deserialize({})
+
+	assert_str(entry.from_node).is_equal("")
+	assert_str(entry.to_node).is_equal("")
+	assert_str(entry.condition_tag).is_equal("")
+
+
+func test_move_tags_default_empty() -> void:
+	var move := MoveConfig.new()
+
+	assert_int(move.move_tags.size()).is_equal(0)
+
+
+func test_move_tags_round_trip() -> void:
+	var move := MoveConfig.new()
+	move.id = "blizzard"
+	move.move_tags = ["magic", "ice"]
+
+	var restored: MoveConfig = MoveConfig.deserialize(move.serialize())
+
+	assert_int(restored.move_tags.size()).is_equal(2)
+	assert_bool(restored.move_tags.has("magic")).is_true()
+	assert_bool(restored.move_tags.has("ice")).is_true()
+
+
+func test_move_config_edge_overrides_round_trip() -> void:
+	var entry := EdgeOverrideEntry.new()
+	entry.from_node = "APPLY_POST_EFFECTS"
+	entry.to_node = "APPLY_PRE_EFFECTS"
+	entry.condition_tag = "triple_kick_loop"
+	var move := MoveConfig.new()
+	move.id = "triple_kick"
+	move.edge_overrides = [entry]
+
+	var restored: MoveConfig = MoveConfig.deserialize(move.serialize())
+
+	assert_int(restored.edge_overrides.size()).is_equal(1)
+	assert_str(restored.edge_overrides[0].from_node).is_equal("APPLY_POST_EFFECTS")
+	assert_str(restored.edge_overrides[0].to_node).is_equal("APPLY_PRE_EFFECTS")
+	assert_str(restored.edge_overrides[0].condition_tag).is_equal("triple_kick_loop")

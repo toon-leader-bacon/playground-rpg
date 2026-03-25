@@ -10,7 +10,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_bsmaster")
-config_id = "scratch_showcase"
+config_id = "magnitude_showcase"
 
 [node name="EnemyRow" type="HBoxContainer" parent="." unique_id=1475508377]
 layout_mode = 1

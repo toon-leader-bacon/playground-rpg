@@ -1,0 +1,25 @@
+[gd_resource type="Resource" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://schema/monsters/MoveConfig.gd" id="1_mc"]
+[ext_resource type="Script" path="res://schema/battle/NodeOverrideEntry.gd" id="2_noe"]
+
+[sub_resource type="Resource" id="NodeOverride_accuracy"]
+script = ExtResource("2_noe")
+node_id = "ACCURACY_CHECK"
+post_hook_tag = "fury_cutter_accuracy"
+
+[sub_resource type="Resource" id="NodeOverride_damage"]
+script = ExtResource("2_noe")
+node_id = "DAMAGE_CALC"
+override_tag = "fury_cutter_damage"
+
+[resource]
+script = ExtResource("1_mc")
+id = "fury_cutter"
+display_name = "Fury Cutter"
+type_tag = 1
+move_power = 0
+accuracy = 0.95
+pp = 20
+target_mode = 0
+node_overrides = [SubResource("NodeOverride_accuracy"), SubResource("NodeOverride_damage")]

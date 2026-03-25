@@ -10,8 +10,9 @@ const _Controller = preload("res://engine/battle/controller/ATBNvMController.gd"
 
 func _auto_submit(controller: Object) -> void:
 	controller.waiting_for_input.connect(
-		func(actor_id: String, _moves: Array) -> void:
-			controller.submit_player_action(actor_id, 0)
+		func(actor_id: String, moves: Array) -> void:
+			if not moves.is_empty():
+				controller.submit_player_action(actor_id, (moves[0] as MoveOption).move_id)
 	)
 	controller.needs_target.connect(
 		func(actor_id: String, target_ids: Array[String]) -> void:
@@ -211,7 +212,7 @@ func test_gauges_frozen_during_player_input() -> void:
 		assert_float(v as float).is_equal(0.0)
 
 	# Clean up: submit so the coroutine can finish
-	controller.submit_player_action("player_0", 0)
+	controller.submit_player_action("player_0", "scratch")
 	# needs_target not needed for SINGLE_ENEMY move
 
 

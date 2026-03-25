@@ -38,7 +38,6 @@ func test_02_heal_self_target_always_hit() -> void:
 	actor.apply_damage(60)  # 40 HP remaining
 	var move := MoveConfig.new()
 	move.id = "heal"
-	move.accuracy_node = "always_hit"
 	move.target_mode = MoveConfig.TargetType.SELF
 	move.heal_formula = "target.max_hp * 0.5"
 	var action: Action = _Action.create("a", "a", actor, actor, move)
@@ -84,7 +83,10 @@ func test_04_swift_always_hit_node() -> void:
 	var actor := _make_monster("a", 100, 50, 10, 10, 50, 10)
 	var target := _make_monster("b", 100, 10, 10, 10, 10, 10)
 	var move := _make_damage_move("swift", "move_power * caster.attack / target.defense", 60)
-	move.accuracy_node = "always_hit"
+	var override := NodeOverrideEntry.new()
+	override.node_id = "ACCURACY_CHECK"
+	override.override_tag = "always_hit"
+	move.node_overrides = [override]
 	move.accuracy = 0.0  # would always miss without node override
 	var action: Action = _Action.create("a", "b", actor, target, move)
 	var state := BattleState.new()
@@ -102,12 +104,15 @@ func test_05_blizzard_always_hits_in_hail() -> void:
 	var move := MoveConfig.new()
 	move.id = "blizzard"
 	move.move_power = 110
-	move.accuracy_node = "weather_accuracy"
-	move.accuracy_node_arguments = [
+	var acc_override := NodeOverrideEntry.new()
+	acc_override.node_id = "ACCURACY_CHECK"
+	acc_override.override_tag = "weather_accuracy"
+	acc_override.args = {"entries": [
 		{"weather": WeatherType.Type.HAIL, "accuracy_formula": "100.0"},
 		{"weather": WeatherType.Type.SUN, "accuracy_formula": "30.0"},
 		{"weather": -1, "accuracy_formula": "70.0"},
-	]
+	]}
+	move.node_overrides = [acc_override]
 	move.damage_formula = "move_power * caster.special_attack / target.special_defense"
 	var action: Action = _Action.create("a", "b", actor, target, move)
 	var state: BattleStateNvM = _BattleStateNvM.new()
@@ -125,12 +130,15 @@ func test_05_blizzard_misses_often_in_sun() -> void:
 	var move := MoveConfig.new()
 	move.id = "blizzard"
 	move.move_power = 110
-	move.accuracy_node = "weather_accuracy"
-	move.accuracy_node_arguments = [
+	var acc_override := NodeOverrideEntry.new()
+	acc_override.node_id = "ACCURACY_CHECK"
+	acc_override.override_tag = "weather_accuracy"
+	acc_override.args = {"entries": [
 		{"weather": WeatherType.Type.HAIL, "accuracy_formula": "100.0"},
 		{"weather": WeatherType.Type.SUN, "accuracy_formula": "30.0"},
 		{"weather": -1, "accuracy_formula": "70.0"},
-	]
+	]}
+	move.node_overrides = [acc_override]
 	move.damage_formula = "move_power * caster.special_attack / target.special_defense"
 	var action: Action = _Action.create("a", "b", actor, target, move)
 	var state: BattleStateNvM = _BattleStateNvM.new()
@@ -530,6 +538,135 @@ func test_17_scald_damage_and_burn_chance() -> void:
 
 
 # ============================================================
+# Group 8 — Magnitude: declare_node + ctx.bb + damage_node
+# ============================================================
+
+## TEST-18: Magnitude — full pipeline exercises declare_node → bb → damage_node path.
+
+func test_18_magnitude_always_hits() -> void:
+	# accuracy = -1.0 means always-hit; verify over many seeds.
+	for seed_val: int in range(20):
+		var a := _make_monster("a", 100, 50, 20, 30, 50, 20)
+		var d := _make_monster("b", 100, 20, 40, 30, 20, 40)
+		var action: Action = _Action.create("a", "b", a, d, _make_magnitude_move())
+		var result: ActionResult = _ActionResolver.apply(action, BattleState.new(), _seeded_rng(seed_val))
+		assert_bool(result.hit).is_true()
+
+
+func test_18_magnitude_deals_nonzero_damage_via_bb_pipeline() -> void:
+	# move_power = 0 and damage_formula = "", so any damage > 0 means the bb
+	# pipeline (declare_node → ctx.bb → damage_node) executed correctly.
+	var attacker := _make_monster("a", 100, 50, 20, 30, 50, 20)
+	var defender := _make_monster("b", 100, 20, 40, 30, 20, 40)
+	var move := _make_magnitude_move()
+	move.crit_rate_formula = "0.0"
+	var action: Action = _Action.create("a", "b", attacker, defender, move)
+
+	var result: ActionResult = _ActionResolver.apply(action, BattleState.new(), _seeded_rng(0))
+
+	assert_bool(result.hit).is_true()
+	assert_int(result.damage).is_greater(0)
+
+
+func test_18_magnitude_damage_varies_across_trials() -> void:
+	# Confirms the roll is live: 100 trials with a fixed stat ratio should
+	# produce at least 3 distinct damage values from the 7-level power table.
+	var seen_damages: Array[int] = []
+
+	for seed_val: int in range(100):
+		var a := _make_monster("a", 100, 40, 20, 30, 40, 20)
+		var d := _make_monster("b", 100, 20, 40, 30, 20, 40)
+		var move := _make_magnitude_move()
+		move.crit_rate_formula = "0.0"
+		var action: Action = _Action.create("a", "b", a, d, move)
+		var result: ActionResult = _ActionResolver.apply(action, BattleState.new(), _seeded_rng(seed_val))
+		if not seen_damages.has(result.damage):
+			seen_damages.append(result.damage)
+
+	assert_int(seen_damages.size()).is_greater_equal(3)
+
+
+func test_18_magnitude_declare_node_skipped_when_turn_denied() -> void:
+	# When turn is denied, the declare_node hook must not run (no bb writes,
+	# no damage). Standard turn-denial short-circuit still applies.
+	var actor := _make_monster("a", 100, 50, 20, 30, 50, 20)
+	actor.deny_turn()
+	var target := _make_monster("b", 100, 20, 40, 30, 20, 40)
+	var hp_before: int = target.current_hp
+	var action: Action = _Action.create("a", "b", actor, target, _make_magnitude_move())
+
+	var result: ActionResult = _ActionResolver.apply(action, BattleState.new(), _seeded_rng(0))
+
+	assert_bool(result.turn_denied).is_true()
+	assert_int(result.damage).is_equal(0)
+	assert_int(target.current_hp).is_equal(hp_before)
+
+
+# ============================================================
+# Group 9 — Triple Kick: edge_overrides loop 3×
+# ============================================================
+
+## TEST-19: Triple Kick — edge override loops the damage segment 3 times total.
+
+func test_19_triple_kick_deals_damage_three_times_total() -> void:
+	# atk=30, def=10, power=10 → each hit = 10 * 30 / 10 = 30 HP
+	# 3 hits total → 90 HP dealt
+	var actor := _make_monster("a", 100, 30, 10, 10, 10, 10)
+	var target := _make_monster("b", 200, 10, 10, 10, 10, 10)
+	var move := _make_triple_kick_move()
+	move.crit_rate_formula = "0.0"  # deterministic: no crits
+	var action: Action = _Action.create("a", "b", actor, target, move)
+	var hp_before: int = target.current_hp
+
+	_ActionResolver.apply(action, BattleState.new(), _seeded_rng(0))
+
+	# Each hit: 10 * 30.0 / 10.0 = 30; 3 hits → 90 total
+	assert_int(hp_before - target.current_hp).is_equal(90)
+
+
+func test_19_triple_kick_terminates() -> void:
+	# Implicit: if the loop is infinite this test would hang.
+	# Reaching this assert confirms the FSM exited.
+	var actor := _make_monster("a", 100, 30, 10, 10, 10, 10)
+	var target := _make_monster("b", 200, 10, 10, 10, 10, 10)
+	var move := _make_triple_kick_move()
+	move.crit_rate_formula = "0.0"
+	var action: Action = _Action.create("a", "b", actor, target, move)
+
+	var result: ActionResult = _ActionResolver.apply(action, BattleState.new(), _seeded_rng(0))
+
+	assert_bool(result.hit).is_true()
+
+
+func test_19_triple_kick_miss_skips_loop() -> void:
+	var actor := _make_monster("a", 100, 30, 10, 10, 10, 10)
+	var target := _make_monster("b", 200, 10, 10, 10, 10, 10)
+	var move := _make_triple_kick_move()
+	move.accuracy = 0.0  # force miss
+	var action: Action = _Action.create("a", "b", actor, target, move)
+	var hp_before: int = target.current_hp
+
+	var result: ActionResult = _ActionResolver.apply(action, BattleState.new(), _seeded_rng(0))
+
+	assert_bool(result.hit).is_false()
+	assert_int(target.current_hp).is_equal(hp_before)
+
+
+func test_19_triple_kick_turn_denied_skips_loop() -> void:
+	var actor := _make_monster("a", 100, 30, 10, 10, 10, 10)
+	actor.deny_turn()
+	var target := _make_monster("b", 200, 10, 10, 10, 10, 10)
+	var move := _make_triple_kick_move()
+	var action: Action = _Action.create("a", "b", actor, target, move)
+	var hp_before: int = target.current_hp
+
+	var result: ActionResult = _ActionResolver.apply(action, BattleState.new(), _seeded_rng(0))
+
+	assert_bool(result.turn_denied).is_true()
+	assert_int(target.current_hp).is_equal(hp_before)
+
+
+# ============================================================
 # Additional pipeline tests
 # ============================================================
 
@@ -618,6 +755,43 @@ func _make_damage_move(id: String, formula: String, power: int) -> MoveConfig:
 	move.move_power = power
 	move.accuracy = 1.0
 	move.damage_formula = formula
+	return move
+
+
+func _make_magnitude_move() -> MoveConfig:
+	var move := MoveConfig.new()
+	move.id = "magnitude"
+	move.display_name = "Magnitude"
+	move.type_tag = TypeTag.Type.EARTH
+	move.move_power = 0
+	move.accuracy = -1.0
+	var declare_override := NodeOverrideEntry.new()
+	declare_override.node_id = "DECLARE"
+	declare_override.post_hook_tag = "magnitude_declare"
+	var damage_override := NodeOverrideEntry.new()
+	damage_override.node_id = "DAMAGE_CALC"
+	damage_override.override_tag = "magnitude_damage"
+	move.node_overrides = [declare_override, damage_override]
+	return move
+
+
+func _make_triple_kick_move() -> MoveConfig:
+	var move := MoveConfig.new()
+	move.id = "triple_kick"
+	move.display_name = "Triple Kick"
+	move.type_tag = TypeTag.Type.NORMAL
+	move.move_power = 10
+	move.accuracy = 1.0
+	move.damage_formula = "move_power * caster.attack / target.defense"
+	var declare_override := NodeOverrideEntry.new()
+	declare_override.node_id = "DECLARE"
+	declare_override.post_hook_tag = "triple_kick_init"
+	move.node_overrides = [declare_override]
+	var edge_override := EdgeOverrideEntry.new()
+	edge_override.from_node = "APPLY_POST_EFFECTS"
+	edge_override.to_node = "APPLY_PRE_EFFECTS"
+	edge_override.condition_tag = "triple_kick_loop"
+	move.edge_overrides = [edge_override]
 	return move
 
 

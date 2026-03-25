@@ -8,6 +8,7 @@ extends RefCounted
 ## Player monsters submit sequentially (player_0 first, then player_N-1).
 ## AI handles all enemy monsters synchronously.
 
+const _MoveFilter = preload("res://engine/battle/scheduler/MoveFilter.gd")
 const _BattleStateNvM = preload("res://engine/battle/model/BattleStateNvM.gd")
 const _DecisionCollector = preload("res://engine/battle/scheduler/DecisionCollector.gd")
 const _SpeedBasedScheduler = preload("res://engine/battle/scheduler/SpeedBasedScheduler.gd")
@@ -127,8 +128,13 @@ func run(
 			if monster.is_fainted():
 				collector.submit(enemy_id, _make_pass(enemy_id, monster))
 				continue
+			var available: Array[String] = _MoveFilter.build_available(monster, _move_library)
+			if available.is_empty():
+				EventBus.battle_turn_denied.emit(enemy_id)
+				collector.submit(enemy_id, _make_pass(enemy_id, monster))
+				continue
 			var action: Action = _enemy_ai.choose_action(
-				enemy_id, monster, _move_library, _make_player_target_resolver(), _rng
+				enemy_id, monster, _move_library, _make_player_target_resolver(), _rng, available
 			)
 			if action == null:
 				collector.submit(enemy_id, _make_pass(enemy_id, monster))
@@ -142,9 +148,14 @@ func run(
 			if player.is_fainted():
 				collector.submit(actor_id, _make_pass(actor_id, player))
 				continue
+			var available: Array[String] = _MoveFilter.build_available(player, _move_library)
+			if available.is_empty():
+				EventBus.battle_turn_denied.emit(actor_id)
+				collector.submit(actor_id, _make_pass(actor_id, player))
+				continue
 			var pc: PlayerController = _player_controllers[i]
 			pc.bind(actor_id, player, collector, _move_library, _make_enemy_target_resolver())
-			waiting_for_input.emit(actor_id, _build_move_list(player))
+			waiting_for_input.emit(actor_id, _build_move_list(available))
 			if not collector.has_submitted(actor_id):
 				await pc.submitted
 
@@ -169,10 +180,10 @@ func run(
 
 
 ## Called by BattleManager to forward a player's move choice.
-func submit_player_action(actor_id: String, move_index: int) -> void:
+func submit_player_action(actor_id: String, move_id: String) -> void:
 	var idx: int = _player_index_from_id(actor_id)
 	if idx >= 0 and idx < _player_controllers.size():
-		_player_controllers[idx].select_move(move_index)
+		_player_controllers[idx].select_move(move_id)
 
 
 ## Called by BattleManager after player selects a target.
@@ -216,11 +227,10 @@ func _make_enemy_target_resolver() -> Callable:
 		return d
 
 
-func _build_move_list(monster: MonsterInstance) -> Array[MoveOption]:
+func _build_move_list(available_ids: Array[String]) -> Array[MoveOption]:
 	var moves: Array[MoveOption] = []
-	for i: int in range(monster.config.move_ids.size()):
-		var move_id: String = monster.config.move_ids[i]
+	for move_id: String in available_ids:
 		var move: MoveConfig = _move_library.get(move_id, null) as MoveConfig
 		var display: String = move.display_name if move != null else move_id
-		moves.append(MoveOption.new(i, display))
+		moves.append(MoveOption.new(move_id, display))
 	return moves

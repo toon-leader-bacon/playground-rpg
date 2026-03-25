@@ -22,6 +22,9 @@ var current_pp: Dictionary = {}
 
 ## Turn denial flag — set by ConditionInstance, cleared by ActionResolver at DECLARE.
 var _turn_denied: bool = false
+## Per-actor cross-turn blackboard. Cleared at battle end.
+## For moves that need to persist state across their actor's turns (e.g. Rollout accumulator).
+var memory: Blackboard = Blackboard.new()
 
 
 ## Create a fresh MonsterInstance from a config at a given level.

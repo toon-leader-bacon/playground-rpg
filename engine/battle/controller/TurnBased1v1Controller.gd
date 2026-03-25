@@ -152,15 +152,14 @@ func run(
 
 
 ## Called by UI or scene to forward the player's move choice into the active battle.
-func submit_player_action(_actor_id: String, move_index: int) -> void:
-	_player_controller.select_move(move_index)
+func submit_player_action(_actor_id: String, move_id: String) -> void:
+	_player_controller.select_move(move_id)
 
 
 func _build_move_list(monster: MonsterInstance) -> Array[MoveOption]:
 	var moves: Array[MoveOption] = []
-	for i: int in range(monster.config.move_ids.size()):
-		var move_id: String = monster.config.move_ids[i]
+	for move_id: String in monster.config.move_ids:
 		var move: MoveConfig = _move_library.get(move_id, null) as MoveConfig
 		var display: String = move.display_name if move != null else move_id
-		moves.append(MoveOption.new(i, display))
+		moves.append(MoveOption.new(move_id, display))
 	return moves

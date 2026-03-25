@@ -22,7 +22,7 @@ func test_self_targeting_move_submits_immediately() -> void:
 	var controller: PlayerController = _PlayerController.new()
 	controller.bind("player", player, collector, move_library, resolver)
 
-	controller.select_move(0)  # pick recover — SELF targeting
+	controller.select_move("recover")  # pick recover — SELF targeting
 
 	assert_object(received_action[0]).is_not_null()
 	var action: Action = received_action[0] as Action
@@ -51,7 +51,7 @@ func test_enemy_targeting_move_emits_needs_target() -> void:
 		emitted_target_ids.assign(ids)
 	)
 
-	controller.select_move(0)
+	controller.select_move("ember")
 
 	assert_bool(needs_target_fired[0]).is_true()
 	assert_bool(emitted_target_ids.has("enemy")).is_true()
@@ -79,7 +79,7 @@ func test_select_target_submits_correct_action() -> void:
 	var controller: PlayerController = _PlayerController.new()
 	controller.bind("player", player, collector, move_library, resolver)
 
-	controller.select_move(1)       # pick scratch (index 1)
+	controller.select_move("scratch")       # pick scratch by move_id
 	controller.select_target("enemy")
 
 	assert_object(received_action[0]).is_not_null()
@@ -102,7 +102,7 @@ func test_select_target_invalid_id_does_not_submit() -> void:
 	var controller: PlayerController = _PlayerController.new()
 	controller.bind("player", player, collector, move_library, resolver)
 
-	controller.select_move(0)
+	controller.select_move("ember")
 	controller.select_target("nonexistent")  # invalid — should not submit
 
 	assert_bool(collector.is_committed).is_false()

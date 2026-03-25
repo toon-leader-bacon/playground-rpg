@@ -34,6 +34,7 @@ var _huds: Dictionary = {}        # actor_id -> CombatantHUD
 var _actor_names: Dictionary = {} # actor_id -> display_name String
 var _current_actor_id: String = ""
 var _pending_target_ids: Array[String] = []
+var _current_available_moves: Array = []
 var _is_atb: bool = false
 
 
@@ -185,6 +186,7 @@ func _on_monster_fainted(monster_name: String) -> void:
 
 func _on_waiting_for_input(actor_id: String, available_moves: Array) -> void:
 	_current_actor_id = actor_id
+	_current_available_moves = available_moves.duplicate()
 	var actor_display: String = _actor_names.get(actor_id, actor_id)
 	_actor_label.text = "%s — choose a move:" % actor_display
 
@@ -226,7 +228,11 @@ func _on_needs_target(actor_id: String, valid_target_ids: Array[String]) -> void
 
 func _on_move_button_pressed(idx: int) -> void:
 	_action_menu.hide()
-	BattleManager.submit_player_action(_current_actor_id, idx)
+	if idx < _current_available_moves.size():
+		BattleManager.submit_player_action(
+			_current_actor_id,
+			(_current_available_moves[idx] as MoveOption).move_id
+		)
 
 
 func _on_target_button_pressed(idx: int) -> void:

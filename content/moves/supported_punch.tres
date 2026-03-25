@@ -1,0 +1,20 @@
+[gd_resource type="Resource" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://schema/monsters/MoveConfig.gd" id="1_mc"]
+[ext_resource type="Script" path="res://schema/battle/NodeOverrideEntry.gd" id="2_noe"]
+
+[sub_resource type="Resource" id="NodeOverride_damage"]
+script = ExtResource("2_noe")
+node_id = "DAMAGE_CALC"
+override_tag = "supported_punch_damage"
+
+[resource]
+script = ExtResource("1_mc")
+id = "supported_punch"
+display_name = "Supported Punch"
+type_tag = 1
+move_power = 50
+accuracy = 1.0
+pp = 15
+target_mode = 0
+node_overrides = [SubResource("NodeOverride_damage")]

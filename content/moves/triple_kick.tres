@@ -1,0 +1,29 @@
+[gd_resource type="Resource" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://schema/monsters/MoveConfig.gd" id="1_mc"]
+[ext_resource type="Script" path="res://schema/battle/NodeOverrideEntry.gd" id="2_noe"]
+[ext_resource type="Script" path="res://schema/battle/EdgeOverrideEntry.gd" id="3_eoe"]
+
+[sub_resource type="Resource" id="NodeOverride_declare"]
+script = ExtResource("2_noe")
+node_id = "DECLARE"
+post_hook_tag = "triple_kick_init"
+
+[sub_resource type="Resource" id="EdgeOverride_loop"]
+script = ExtResource("3_eoe")
+from_node = "APPLY_POST_EFFECTS"
+to_node = "APPLY_PRE_EFFECTS"
+condition_tag = "triple_kick_loop"
+
+[resource]
+script = ExtResource("1_mc")
+id = "triple_kick"
+display_name = "Triple Kick"
+type_tag = 1
+move_power = 10
+accuracy = 0.9
+pp = 10
+target_mode = 0
+damage_formula = "move_power * caster.attack / target.defense"
+node_overrides = [SubResource("NodeOverride_declare")]
+edge_overrides = [SubResource("EdgeOverride_loop")]

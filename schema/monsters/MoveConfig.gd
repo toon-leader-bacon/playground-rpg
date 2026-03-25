@@ -23,15 +23,23 @@ enum TargetType {
 @export var crit_rate_formula: String = ""         # Expression override; default = 1/16
 
 # --- Node override fields (Tier 3 escape hatches) ---
-@export var accuracy_node: String = ""             # Tag in NodeRegistry; replaces ACCURACY_CHECK
-@export var accuracy_node_arguments: Array = []    # Arguments passed to accuracy node
+# Each entry targets one FSM node and may supply an override, pre-hook, post-hook, and args.
+# Moves with no exotic behavior leave this array empty.
+@export var node_overrides: Array[NodeOverrideEntry] = []
 
-@export var damage_node: String = ""               # Tag in NodeRegistry; replaces default damage calc
-@export var damage_args: Dictionary = {}           # Arguments for damage_node
+# --- Edge override fields (Tier 3 loop/branch injection) ---
+# Each entry injects a custom FSM edge (conditional or unconditional).
+# Used for multi-hit loops and other non-linear pipeline structures.
+@export var edge_overrides: Array[EdgeOverrideEntry] = []
 
 # --- Effect arrays ---
 @export var pre_effects: Array[EffectEntry] = []
 @export var post_effects: Array[EffectEntry] = []
+
+# --- Action-space tags ---
+## Designer-assigned string tags (e.g. "magic", "physical") used for move denial matching.
+## Marked Array (untyped) for .tres compatibility — treat as Array[String].
+@export var move_tags: Array = []
 
 
 func serialize() -> Dictionary:
@@ -52,12 +60,11 @@ func serialize() -> Dictionary:
 		"damage_formula": damage_formula,
 		"heal_formula": heal_formula,
 		"crit_rate_formula": crit_rate_formula,
-		"accuracy_node": accuracy_node,
-		"accuracy_node_arguments": accuracy_node_arguments.duplicate(),
-		"damage_node": damage_node,
-		"damage_args": damage_args.duplicate(),
+		"node_overrides": _serialize_overrides(),
+		"edge_overrides": _serialize_edge_overrides(),
 		"pre_effects": pre_arr,
 		"post_effects": post_arr,
+		"move_tags": move_tags.duplicate(),
 	}
 
 
@@ -73,17 +80,19 @@ static func deserialize(data: Dictionary) -> MoveConfig:
 	m.damage_formula = data.get("damage_formula", "")
 	m.heal_formula = data.get("heal_formula", "")
 	m.crit_rate_formula = data.get("crit_rate_formula", "")
-	m.accuracy_node = data.get("accuracy_node", "")
-	var raw_acc_args: Array = data.get("accuracy_node_arguments", []) as Array
-	m.accuracy_node_arguments.assign(raw_acc_args)
-	m.damage_node = data.get("damage_node", "")
-	m.damage_args = (data.get("damage_args", {}) as Dictionary).duplicate()
+	var raw_overrides: Array = data.get("node_overrides", []) as Array
+	for d: Dictionary in raw_overrides:
+		m.node_overrides.append(NodeOverrideEntry.deserialize(d))
+	var raw_edge_overrides: Array = data.get("edge_overrides", []) as Array
+	for d: Dictionary in raw_edge_overrides:
+		m.edge_overrides.append(EdgeOverrideEntry.deserialize(d))
 	var raw_pre: Array = data.get("pre_effects", []) as Array
 	for d: Dictionary in raw_pre:
 		m.pre_effects.append(EffectEntry.deserialize(d))
 	var raw_post: Array = data.get("post_effects", []) as Array
 	for d: Dictionary in raw_post:
 		m.post_effects.append(EffectEntry.deserialize(d))
+	m.move_tags = data.get("move_tags", []).duplicate()
 	return m
 
 
@@ -98,9 +107,22 @@ func deserialize_update(data: Dictionary) -> void:
 	damage_formula = data.get("damage_formula", damage_formula)
 	heal_formula = data.get("heal_formula", heal_formula)
 	crit_rate_formula = data.get("crit_rate_formula", crit_rate_formula)
-	accuracy_node = data.get("accuracy_node", accuracy_node)
-	damage_node = data.get("damage_node", damage_node)
+	move_tags = data.get("move_tags", move_tags)
 
 
 func deep_copy() -> MoveConfig:
 	return MoveConfig.deserialize(serialize())
+
+
+func _serialize_overrides() -> Array:
+	var arr: Array = []
+	for e: NodeOverrideEntry in node_overrides:
+		arr.append(e.serialize())
+	return arr
+
+
+func _serialize_edge_overrides() -> Array:
+	var arr: Array = []
+	for e: EdgeOverrideEntry in edge_overrides:
+		arr.append(e.serialize())
+	return arr

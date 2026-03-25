@@ -40,10 +40,9 @@ func bind(
 	_pending_move = null
 
 
-## Step 1: player selects which move to use by index.
+## Step 1: player selects which move to use by ID.
 ## SELF moves are submitted immediately. All others emit needs_target.
-func select_move(move_index: int) -> void:
-	var move_id: String = _actor.config.move_ids[move_index]
+func select_move(move_id: String) -> void:
 	_pending_move = _move_library.get(move_id, null) as MoveConfig
 
 	if _pending_move != null and _pending_move.target_mode == MoveConfig.TargetType.SELF:

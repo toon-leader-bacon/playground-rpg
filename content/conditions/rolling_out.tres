@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://schema/battle/ConditionConfig.gd" id="1_rolling"]
+
+[resource]
+script = ExtResource("1_rolling")
+id = "rolling_out"
+display_name = "Rolling Out"
+trigger_event = ""
+periodic_damage_formula = ""
+stat_modifiers = []
+turn_denial_chance = 0.0
+duration_type = 1
+duration = 3
+duration_min = 1
+duration_max = 3
+removal_trigger_event = ""
+removal_move_type = -1
+action_lock_move_id = "rollout"
+action_denied_tags = []
+action_injected_move_id = ""

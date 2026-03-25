@@ -8,6 +8,9 @@ var player_team: Array[MonsterInstance] = []
 var enemy_team: Array[MonsterInstance] = []
 var weather: int = WeatherType.Type.NONE
 var weather_duration: int = -1  # -1 = permanent/no weather active
+## Per-battle field blackboard. Cleared at battle end.
+## For moves that affect the battlefield itself (e.g. Reflect duration, entry hazards).
+var field_bb: Blackboard = Blackboard.new()
 
 
 ## Returns the MonsterInstance for an actor_id like "player_2" or "enemy_5".

@@ -49,10 +49,10 @@ func start_battle(style: CombatStyle, combatants: Array) -> void:
 
 
 ## Called by UI or scene to forward the player's move choice into the active battle.
-func submit_player_action(actor_id: String, move_index: int) -> void:
+func submit_player_action(actor_id: String, move_id: String) -> void:
 	if _active_battle == null:
 		return
-	_active_battle.call("submit_player_action", actor_id, move_index)
+	_active_battle.call("submit_player_action", actor_id, move_id)
 
 
 ## Called by 2v2 UI after player selects a target.

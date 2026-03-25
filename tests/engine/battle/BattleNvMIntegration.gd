@@ -48,10 +48,11 @@ func _run() -> void:
 	EventBus.battle_monster_fainted.connect(_on_monster_fainted)
 	EventBus.battle_ended.connect(_on_battle_ended)
 
-	# Auto-submit: always pick move 0, pick first available target
+	# Auto-submit: always pick first available move, pick first available target
 	EventBus.battle_waiting_for_input.connect(
-		func(actor_id: String, _moves: Array) -> void:
-			BattleManager.submit_player_action(actor_id, 0)
+		func(actor_id: String, moves: Array) -> void:
+			if not moves.is_empty():
+				BattleManager.submit_player_action(actor_id, (moves[0] as MoveOption).move_id)
 	)
 	EventBus.battle_needs_target.connect(
 		func(actor_id: String, target_ids: Array[String]) -> void:

@@ -202,5 +202,8 @@ func _make_heal_move(id: String, heal_amount: int) -> MoveConfig:
 	move.accuracy = 1.0
 	move.heal_formula = "move_power"
 	move.target_mode = MoveConfig.TargetType.SELF
-	move.accuracy_node = "always_hit"
+	var override := NodeOverrideEntry.new()
+	override.node_id = "ACCURACY_CHECK"
+	override.override_tag = "always_hit"
+	move.node_overrides = [override]
 	return move

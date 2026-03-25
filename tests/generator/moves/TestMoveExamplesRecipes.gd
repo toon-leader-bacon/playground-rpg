@@ -57,14 +57,16 @@ func test_recoil_move_fraction() -> void:
 
 func test_always_hit_uses_accuracy_node() -> void:
 	var move: MoveConfig = _MoveExamplesRecipes.always_hit_move(RandomNumberGenerator.new()) as MoveConfig
-	assert_str(move.accuracy_node).is_equal("always_hit")
+	assert_int(move.node_overrides.size()).is_greater_equal(1)
+	assert_str(move.node_overrides[0].override_tag).is_equal("always_hit")
 
 
 func test_weather_accuracy_node_arguments_include_hail() -> void:
 	var move: MoveConfig = _MoveExamplesRecipes.weather_accuracy_move(RandomNumberGenerator.new()) as MoveConfig
-	assert_str(move.accuracy_node).is_equal("weather_accuracy")
+	assert_str(move.node_overrides[0].override_tag).is_equal("weather_accuracy")
+	assert_bool(move.node_overrides[0].args.has("entries")).is_true()
 	var found_hail: bool = false
-	for entry: Dictionary in move.accuracy_node_arguments:
+	for entry: Dictionary in move.node_overrides[0].args.get("entries", []) as Array:
 		if entry.get("weather", -1) == WeatherType.Type.HAIL:
 			found_hail = true
 			break
@@ -85,7 +87,8 @@ func test_paralysis_move_condition_and_type_tag() -> void:
 	assert_int(move.post_effects.size()).is_greater(0)
 	var fx: EffectEntry = move.post_effects[0] as EffectEntry
 	assert_str(fx.condition_id).is_equal("paralysis")
-	assert_str(move.accuracy_node).is_equal("always_hit")
+	assert_int(move.node_overrides.size()).is_greater_equal(1)
+	assert_str(move.node_overrides[0].override_tag).is_equal("always_hit")
 
 
 func test_sleep_move_has_reduced_accuracy() -> void:
@@ -169,7 +172,8 @@ func test_damage_self_debuff_effects_target_caster() -> void:
 
 func test_speed_up_move_applies_speed_up_1_to_caster() -> void:
 	var move: MoveConfig = _MoveExamplesRecipes.speed_up_move(RandomNumberGenerator.new()) as MoveConfig
-	assert_str(move.accuracy_node).is_equal("always_hit")
+	assert_int(move.node_overrides.size()).is_greater_equal(1)
+	assert_str(move.node_overrides[0].override_tag).is_equal("always_hit")
 	assert_int(move.post_effects.size()).is_greater(0)
 	var fx: EffectEntry = move.post_effects[0] as EffectEntry
 	assert_str(fx.condition_id).is_equal("speed_up_1")
@@ -192,15 +196,17 @@ func test_config_loading_swift() -> void:
 	var move: MoveConfig = ConfigLoader.load_move("swift")
 	assert_object(move).is_not_null()
 	assert_str(move.id).is_equal("swift")
-	assert_str(move.accuracy_node).is_equal("always_hit")
+	assert_int(move.node_overrides.size()).is_greater_equal(1)
+	assert_str(move.node_overrides[0].override_tag).is_equal("always_hit")
 
 
 func test_config_loading_blizzard() -> void:
 	var move: MoveConfig = ConfigLoader.load_move("blizzard")
 	assert_object(move).is_not_null()
 	assert_str(move.id).is_equal("blizzard")
-	assert_str(move.accuracy_node).is_equal("weather_accuracy")
-	assert_int(move.accuracy_node_arguments.size()).is_greater(0)
+	assert_int(move.node_overrides.size()).is_greater_equal(1)
+	assert_str(move.node_overrides[0].override_tag).is_equal("weather_accuracy")
+	assert_bool(move.node_overrides[0].args.has("entries")).is_true()
 
 
 func test_config_loading_slash() -> void:
@@ -253,7 +259,8 @@ func test_config_loading_thunder_wave() -> void:
 	var move: MoveConfig = ConfigLoader.load_move("thunder_wave")
 	assert_object(move).is_not_null()
 	assert_str(move.id).is_equal("thunder_wave")
-	assert_str(move.accuracy_node).is_equal("always_hit")
+	assert_int(move.node_overrides.size()).is_greater_equal(1)
+	assert_str(move.node_overrides[0].override_tag).is_equal("always_hit")
 	assert_int(move.post_effects.size()).is_greater(0)
 	var fx: EffectEntry = move.post_effects[0] as EffectEntry
 	assert_str(fx.condition_id).is_equal("paralysis")

@@ -41,7 +41,8 @@ func test_load_recover() -> void:
 	assert_str(move.id).is_equal("recover")
 	assert_int(move.move_power).is_equal(0)
 	assert_str(move.heal_formula).is_not_empty()
-	assert_str(move.accuracy_node).is_equal("always_hit")
+	assert_int(move.node_overrides.size()).is_equal(1)
+	assert_str(move.node_overrides[0].override_tag).is_equal("always_hit")
 	assert_int(move.target_mode).is_equal(MoveConfig.TargetType.SELF)
 
 

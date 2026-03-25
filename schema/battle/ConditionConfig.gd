@@ -20,6 +20,15 @@ enum DurationType { PERMANENT, COUNTDOWN, RANDOM_RANGE }
 @export var removal_trigger_event: String = ""     # EventBus signal that can remove this condition
 @export var removal_move_type: int = -1            # TypeTag.Type that causes removal (Freeze)
 
+# --- Action-space modifiers ---
+## If set, only this move is available while the condition is active (lock-in).
+@export var action_lock_move_id: String = ""
+## Moves whose move_tags intersect this set are removed from the action space.
+## Marked Array (untyped) for .tres compatibility — treat as Array[String].
+@export var action_denied_tags: Array = []
+## If set, this move is added to the candidate pool (injected move).
+@export var action_injected_move_id: String = ""
+
 
 func serialize() -> Dictionary:
 	return {
@@ -35,6 +44,9 @@ func serialize() -> Dictionary:
 		"duration_max": duration_max,
 		"removal_trigger_event": removal_trigger_event,
 		"removal_move_type": removal_move_type,
+		"action_lock_move_id": action_lock_move_id,
+		"action_denied_tags": action_denied_tags.duplicate(),
+		"action_injected_move_id": action_injected_move_id,
 	}
 
 
@@ -53,6 +65,9 @@ static func deserialize(data: Dictionary) -> ConditionConfig:
 	c.duration_max = data.get("duration_max", 3)
 	c.removal_trigger_event = data.get("removal_trigger_event", "")
 	c.removal_move_type = data.get("removal_move_type", -1)
+	c.action_lock_move_id = data.get("action_lock_move_id", "")
+	c.action_denied_tags = data.get("action_denied_tags", []).duplicate()
+	c.action_injected_move_id = data.get("action_injected_move_id", "")
 	return c
 
 

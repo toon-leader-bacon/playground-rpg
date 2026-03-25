@@ -10,14 +10,20 @@ func choose_action(
 	actor: MonsterInstance,
 	move_library: Dictionary[String, MoveConfig],
 	target_resolver: Callable,
-	rng: RandomNumberGenerator
+	rng: RandomNumberGenerator,
+	available_ids: Array[String] = []
 ) -> Action:
 	if actor.config == null or actor.config.move_ids.is_empty():
 		return null
 
-	# Pick a random move from the actor's known move list
-	var move_idx: int = rng.randi_range(0, actor.config.move_ids.size() - 1)
-	var move_id: String = actor.config.move_ids[move_idx]
+	# Use the pre-filtered list when provided, otherwise fall back to full moveset
+	var pool: Array[String] = available_ids if not available_ids.is_empty() else actor.config.move_ids
+	if pool.is_empty():
+		return null
+
+	# Pick a random move from the pool
+	var move_idx: int = rng.randi_range(0, pool.size() - 1)
+	var move_id: String = pool[move_idx]
 	var move: MoveConfig = move_library.get(move_id, null) as MoveConfig
 
 	# Resolve valid targets — Dictionary maps target_id (String) -> MonsterInstance

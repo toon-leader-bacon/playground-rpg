@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="MoveConfig" format=3]
+
+[ext_resource type="Script" path="res://schema/monsters/MoveConfig.gd" id="1_fury1"]
+[ext_resource type="Script" path="res://schema/battle/RepeatConfig.gd" id="2_fury2"]
+
+[sub_resource type="Resource" id="RepeatConfig_1"]
+script = ExtResource("2_fury2")
+reentry_node = 0
+min_hits = 2
+max_hits = 5
+
+[resource]
+script = ExtResource("1_fury1")
+id = "fury_swipes"
+display_name = "Fury Swipes"
+move_power = 18
+accuracy = 1.0
+pp = 15
+target_mode = 0
+damage_formula = "move_power * caster.attack / target.defense"
+repeat_config = SubResource("RepeatConfig_1")

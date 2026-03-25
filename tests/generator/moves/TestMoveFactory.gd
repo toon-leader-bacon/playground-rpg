@@ -111,7 +111,8 @@ func test_heal_targets_self() -> void:
 func test_heal_uses_always_hit_node() -> void:
 	var factory := _MoveFactory.new()
 	var move: MoveConfig = factory.build_heal("heal", "Heal")
-	assert_str(move.accuracy_node).is_equal("always_hit")
+	assert_int(move.node_overrides.size()).is_equal(1)
+	assert_str(move.node_overrides[0].override_tag).is_equal("always_hit")
 
 
 func test_heal_formula_includes_max_hp_and_fraction() -> void:

@@ -1,0 +1,25 @@
+[gd_resource type="Resource" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://schema/monsters/MoveConfig.gd" id="1_mc"]
+[ext_resource type="Script" path="res://schema/battle/NodeOverrideEntry.gd" id="2_noe"]
+
+[sub_resource type="Resource" id="NodeOverride_declare"]
+script = ExtResource("2_noe")
+node_id = "DECLARE"
+post_hook_tag = "magnitude_declare"
+
+[sub_resource type="Resource" id="NodeOverride_damage"]
+script = ExtResource("2_noe")
+node_id = "DAMAGE_CALC"
+override_tag = "magnitude_damage"
+
+[resource]
+script = ExtResource("1_mc")
+id = "magnitude"
+display_name = "Magnitude"
+type_tag = 4
+move_power = 0
+accuracy = -1.0
+pp = 30
+target_mode = 0
+node_overrides = [SubResource("NodeOverride_declare"), SubResource("NodeOverride_damage")]

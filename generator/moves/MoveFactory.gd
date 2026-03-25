@@ -156,6 +156,9 @@ func build_heal(
 	move.pp = p_pp
 	move.type_tag = TypeTag.Type.NORMAL
 	move.target_mode = MoveConfig.TargetType.SELF
-	move.accuracy_node = "always_hit"
+	var acc_override := NodeOverrideEntry.new()
+	acc_override.node_id = "ACCURACY_CHECK"
+	acc_override.override_tag = "always_hit"
+	move.node_overrides = [acc_override]
 	move.heal_formula = "target.max_hp * %s" % str(p_heal_fraction)
 	return move
