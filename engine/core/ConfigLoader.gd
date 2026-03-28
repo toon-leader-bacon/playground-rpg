@@ -28,3 +28,7 @@ func load_battle_config(id: String) -> BattleConfig:
 
 func load_condition(id: String) -> ConditionConfig:
 	return load(CONDITIONS_PATH + id + ".tres") as ConditionConfig
+
+
+func load_zone(id: String) -> Resource:
+	return load(ZONES_PATH + id + ".tres")

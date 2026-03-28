@@ -1,0 +1,129 @@
+[gd_resource type="Resource" script_class="ZoneResource" format=3]
+
+[ext_resource type="Script" path="res://schema/world/EncounterEntryResource.gd" id="1_qqok5"]
+[ext_resource type="Script" path="res://schema/world/EncounterTableResource.gd" id="2_irgwv"]
+[ext_resource type="Script" path="res://schema/world/TileEffectResource.gd" id="3_7n7fa"]
+[ext_resource type="Script" path="res://schema/world/EntityDefinitionResource.gd" id="4_dfvts"]
+[ext_resource type="Script" path="res://schema/world/TileLayerResource.gd" id="5_3p20y"]
+[ext_resource type="Script" path="res://schema/world/TileDefinitionResource.gd" id="6_xua4x"]
+[ext_resource type="Script" path="res://schema/world/ZoneResource.gd" id="7_w720e"]
+
+[sub_resource type="Resource" id="Resource_yol8d"]
+script = ExtResource("1_qqok5")
+monster_id = "fire_lizard"
+weight = 3.0
+level_min = 2
+level_max = 4
+
+[sub_resource type="Resource" id="Resource_1b16s"]
+script = ExtResource("1_qqok5")
+monster_id = "stone_golem"
+level_min = 3
+
+[sub_resource type="Resource" id="Resource_aquq6"]
+script = ExtResource("2_irgwv")
+entries = [SubResource("Resource_yol8d"), SubResource("Resource_1b16s")]
+encounter_probability = 0.15
+
+[sub_resource type="Resource" id="Resource_lsle2"]
+script = ExtResource("3_7n7fa")
+effect_tag = "show_text"
+args = {
+"text": "Hello, world!"
+}
+
+[sub_resource type="Resource" id="Resource_vvgl1"]
+script = ExtResource("4_dfvts")
+id = "sign_01"
+display_name = "Sign"
+position = Vector2i(9, 7)
+on_interact_effect = SubResource("Resource_lsle2")
+
+[sub_resource type="Resource" id="Resource_07acj"]
+script = ExtResource("4_dfvts")
+id = "npc_wanderer"
+display_name = "Wanderer"
+position = Vector2i(12, 8)
+movement_behavior_tag = "wander"
+
+[sub_resource type="Resource" id="Resource_303sm"]
+script = ExtResource("6_xua4x")
+tags = ["grass"]
+
+[sub_resource type="Resource" id="Resource_4yjb6"]
+script = ExtResource("3_7n7fa")
+effect_tag = "encounter_check"
+
+[sub_resource type="Resource" id="Resource_q6m18"]
+script = ExtResource("6_xua4x")
+tags = ["tall_grass"]
+on_enter_effect = SubResource("Resource_4yjb6")
+
+[sub_resource type="Resource" id="Resource_f6tdy"]
+script = ExtResource("6_xua4x")
+tags = ["water"]
+passability_mask = 0
+
+[sub_resource type="Resource" id="Resource_hruts"]
+script = ExtResource("6_xua4x")
+tags = ["path"]
+
+[sub_resource type="Resource" id="Resource_lakjv"]
+script = ExtResource("3_7n7fa")
+effect_tag = "warp"
+args = {
+"spawn_point_id": "north_exit",
+"zone_id": "test_zone"
+}
+
+[sub_resource type="Resource" id="Resource_v4ncj"]
+script = ExtResource("6_xua4x")
+tags = ["warp"]
+on_enter_effect = SubResource("Resource_lakjv")
+
+[sub_resource type="Resource" id="Resource_tfi63"]
+script = ExtResource("5_3p20y")
+name = "ground"
+width = 20
+height = 15
+tile_palette = {
+"g": SubResource("Resource_303sm"),
+"p": SubResource("Resource_hruts"),
+"t": SubResource("Resource_q6m18"),
+"w": SubResource("Resource_f6tdy"),
+"x": SubResource("Resource_v4ncj")
+}
+tile_ids = PackedStringArray("g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "x", "g", "g", "g", "g", "g", "g", "g", "g", "w", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "p", "g", "g", "g", "g", "g", "g", "g", "g", "w", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "w", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "w", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "w", "g", "g", "g", "g", "g", "g", "g", "t", "t", "t", "t", "t", "t", "t", "g", "g", "g", "g", "g", "w", "g", "g", "g", "g", "g", "g", "g", "t", "t", "t", "t", "t", "t", "t", "g", "g", "g", "g", "g", "w", "g", "g", "g", "g", "g", "g", "g", "t", "t", "t", "t", "t", "t", "t", "g", "g", "g", "g", "g", "w", "g", "g", "g", "g", "g", "g", "g", "t", "t", "t", "t", "t", "t", "t", "g", "g", "g", "g", "g", "w", "g", "g", "g", "g", "g", "g", "g", "t", "t", "t", "t", "t", "t", "t", "g", "g", "g", "g", "g", "w", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "w", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "w", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "w", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "w", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "w")
+
+[sub_resource type="Resource" id="Resource_fcg6u"]
+script = ExtResource("6_xua4x")
+tags = ["wall"]
+passability_mask = 0
+
+[sub_resource type="Resource" id="Resource_8n4oe"]
+script = ExtResource("6_xua4x")
+tags = ["ledge_south"]
+passability_mask = 33
+
+[sub_resource type="Resource" id="Resource_vm6gf"]
+script = ExtResource("5_3p20y")
+name = "collision"
+width = 20
+height = 15
+tile_palette = {
+"L": SubResource("Resource_8n4oe"),
+"W": SubResource("Resource_fcg6u")
+}
+tile_ids = PackedStringArray("W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "W", "W", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "W", "W", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "W", "W", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "W", "W", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "W", "W", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "W", "W", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "W", "W", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "W", "W", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "W", "W", "L", "L", "L", "L", "L", "L", "L", "L", "L", "L", "L", "L", "L", "L", "L", "L", "L", "L", "W", "W", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "W", "W", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "W", "W", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W")
+
+[resource]
+script = ExtResource("7_w720e")
+id = "test_zone"
+display_name = "Test Route"
+spawn_points = {
+"default": Vector2i(2, 11),
+"north_exit": Vector2i(10, 1)
+}
+layers = [SubResource("Resource_tfi63"), SubResource("Resource_vm6gf")]
+entities = [SubResource("Resource_vvgl1"), SubResource("Resource_07acj")]
+default_encounter_table = SubResource("Resource_aquq6")
