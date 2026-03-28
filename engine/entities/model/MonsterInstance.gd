@@ -67,6 +67,7 @@ func speed() -> int:
 
 ## Speed incorporating the current speed stage modifier.
 ## Stage formula: (2 + max(stage,0)) / (2 + max(-stage,0)) applied to base speed.
+## This is the pokemon implementation of status altering moves.
 func effective_speed() -> int:
 	var stage: int = get_stat_stage("speed")
 	var base: int = speed()
