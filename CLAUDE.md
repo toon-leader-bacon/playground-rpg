@@ -109,6 +109,16 @@ Correct pattern:
 script = ExtResource("1_id")
 ```
 
+### `.tres` file got-chas
+
+The `.tres` text format has non-obvious differences from GDScript/Python syntax that
+cause silent parse errors:
+
+| Field type | GDScript / Python look-alike (WRONG) | Correct `.tres` format |
+|---|---|---|
+| `PackedStringArray` | `PackedStringArray(["a", "b"])` | `PackedStringArray("a", "b")` — no brackets |
+| `Dictionary` with Resource values | `{"k": SubResource("id")}` inline on one line | Multiline block (ResourceSaver handles this) |
+
 ### Headless class cache
 
 After adding a script with class_name, run:
