@@ -27,3 +27,13 @@ signal battle_condition_applied(actor_id: String, condition_id: String)
 signal battle_condition_expired(actor_id: String, condition_id: String)
 signal battle_turn_denied(actor_id: String, condition_id: String)
 signal battle_weather_changed(weather_type: int, duration: int)
+
+# --- Zone / world signals ---
+signal zone_loaded(zone_id: String, display_name: String)
+signal zone_player_moved(new_cell: Vector2i)
+signal zone_warp_requested(zone_id: String, spawn_point: String)
+signal zone_encounter_triggered(encounter_table: Resource)
+signal zone_flag_changed(flag_name: String, value: Variant)
+signal zone_entity_removed(entity_id: String)
+signal zone_show_text(text: String)
+signal zone_item_collected(item_id: String)

@@ -1,0 +1,168 @@
+[gd_resource type="Resource" format=3]
+
+; =============================================================================
+; example_zone.tres
+; A minimal 3x3 zone for reference and testing purposes.
+;
+; Grid layout (x,y) — origin top-left, positive-Y downward:
+;
+;   (0,0)grass  (1,0)grass  (2,0)grass
+;   (0,1)water  (1,1)grass  (2,1)sign←entity
+;   (0,2)grass  (1,2)grass  (2,2)grass
+;
+; Spawn point "default" at (1,1) — center tile.
+; Water tile at (0,1) — fully blocked (passability_mask = 0).
+; Sign entity at (2,1) — static interactable, shows text on interact.
+;
+; Flat layer arrays are row-major, left-to-right, top-to-bottom.
+; Index into the local_tile_palette:
+;   0 = grass_standard
+;   1 = water_blocked
+; Layer length = width * height = 3 * 3 = 9
+;
+; ground layer indices:
+;   [0,0,0,  <- row y=0: all grass
+;    1,0,0,  <- row y=1: water, grass, grass
+;    0,0,0]  <- row y=2: all grass
+;
+; decoration layer: all -1 (empty)
+; =============================================================================
+
+; -----------------------------------------------------------------------------
+; External script references (schema classes)
+; -----------------------------------------------------------------------------
+
+[ext_resource type="Script" path="res://schema/world/ZoneResource.gd"                   id="1_zone"]
+[ext_resource type="Script" path="res://schema/world/TileDefinitionResource.gd"         id="2_tiledef"]
+[ext_resource type="Script" path="res://schema/world/TileEffectResource.gd"             id="3_effect"]
+[ext_resource type="Script" path="res://schema/world/PassabilityConditionResource.gd"   id="4_cond"]
+[ext_resource type="Script" path="res://schema/world/EntityDefinitionResource.gd"       id="5_entity"]
+
+; -----------------------------------------------------------------------------
+; Sub-resource: on_interact effect for the sign entity
+; TileEffectResource { effect_tag: "show_text", args: { "text": "..." } }
+; -----------------------------------------------------------------------------
+
+[sub_resource type="Resource" id="effect_sign_interact"]
+script = ExtResource("3_effect")
+effect_tag = "show_text"
+args = {
+"text": "A weathered sign reads: WATER AHEAD. TURN BACK."
+}
+
+; -----------------------------------------------------------------------------
+; Sub-resource: Sign entity definition
+; Static interactable — yes collision, no movement, interact shows text.
+; Position (2,1): right column, middle row.
+; Physics layer 3: entity layer
+; -----------------------------------------------------------------------------
+
+[sub_resource type="Resource" id="entity_sign"]
+script = ExtResource("5_entity")
+id = "sign_water_warning"
+display_name = "Warning Sign"
+position = Vector2i(2, 1)
+sprite = null
+z_index = 2
+has_collision = true
+physics_layer = 3
+on_interact = SubResource("effect_sign_interact")
+on_enter = null
+on_load = null
+movement_behavior = null
+tags = PackedStringArray("static_interactable", "sign")
+persistence_scope = ""
+flag_open_condition = ""
+
+; -----------------------------------------------------------------------------
+; Sub-resource: grass_standard tile definition
+; Fully passable. No effects. No encounter table (inherits zone default = null).
+; physics_layer = 0: no collision shape — ground is open.
+; -----------------------------------------------------------------------------
+
+[sub_resource type="Resource" id="tile_grass"]
+script = ExtResource("2_tiledef")
+id = "grass_standard"
+tags = PackedStringArray("grass", "outdoor")
+texture = null
+atlas_coords = Vector2i(0, 0)
+passability_mask = 255
+conditions = []
+on_enter = null
+on_exit = null
+encounter_table_override = null
+physics_layer = 0
+
+; -----------------------------------------------------------------------------
+; Sub-resource: water_blocked tile definition
+; Fully blocked. physics_layer = 2 (water layer).
+; passability_mask = 0: no direction passable without a condition.
+;
+; Future: add a PassabilityConditionResource here with condition_tag "has_item"
+; and condition_args { "item": "surf" } to unlock movement when surf is obtained.
+; The condition would set direction_mask = 255 (all directions unlocked if passes).
+; -----------------------------------------------------------------------------
+
+[sub_resource type="Resource" id="tile_water"]
+script = ExtResource("2_tiledef")
+id = "water_blocked"
+tags = PackedStringArray("water", "outdoor")
+texture = null
+atlas_coords = Vector2i(1, 0)
+passability_mask = 0
+conditions = []
+on_enter = null
+on_exit = null
+encounter_table_override = null
+physics_layer = 2
+
+; -----------------------------------------------------------------------------
+; Root resource: ZoneResource
+; -----------------------------------------------------------------------------
+
+[resource]
+script = ExtResource("1_zone")
+
+; --- Metadata ---
+id = "example_zone"
+display_name = "Example Zone"
+width = 3
+height = 3
+
+; --- Spawn points ---
+; Dictionary: String -> Vector2i
+; "default" spawn at center tile (1,1)
+spawn_points = {
+"default": Vector2i(1, 1)
+}
+
+; --- Tile palette ---
+; Index 0 = grass_standard
+; Index 1 = water_blocked
+local_tile_palette = [SubResource("tile_grass"), SubResource("tile_water")]
+
+; --- Layer: ground ---
+; Flat PackedInt32Array, row-major, length = width * height = 9
+; -1 = void cell (absent). 0 = grass. 1 = water.
+;
+;  row y=0:  (0,0)=grass  (1,0)=grass  (2,0)=grass  → 0, 0, 0
+;  row y=1:  (0,1)=water  (1,1)=grass  (2,1)=grass  → 1, 0, 0
+;  row y=2:  (0,2)=grass  (1,2)=grass  (2,2)=grass  → 0, 0, 0
+layer_ground = PackedInt32Array(
+    0, 0, 0, 
+    1, 0, 0, 
+    0, 0, 0)
+
+; --- Layer: decoration ---
+; All empty for this example. -1 = no tile.
+layer_decoration = PackedInt32Array(
+    -1, -1, -1, 
+    -1, -1, -1, 
+    -1, -1, -1)
+
+; --- Entities ---
+entities = [SubResource("entity_sign")]
+
+; --- Encounters ---
+; null = no random encounters in this zone.
+default_encounter_table = null

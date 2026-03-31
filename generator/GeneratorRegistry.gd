@@ -51,6 +51,7 @@ extends RefCounted
 const _StatBlockRecipes = preload("res://generator/recipes/StatBlockRecipes.gd")
 const _MoveRecipes = preload("res://generator/recipes/MoveRecipes.gd")
 const _MoveExamplesRecipes = preload("res://generator/recipes/MoveExamplesRecipes.gd")
+const _ZoneRecipes = preload("res://generator/world/ZoneRecipes.gd")
 
 
 static func get_all() -> Dictionary:
@@ -235,5 +236,12 @@ static func get_all() -> Dictionary:
 			"func": func(rng: RandomNumberGenerator) -> Resource:
 				return _MoveExamplesRecipes.speed_up_move(rng),
 			"description": "Quick Step — always hits; speed_up_1 to caster (pattern: self speed buff).",
+		},
+
+		# ── Zone recipes ──────────────────────────────────────────────────────
+		"zone_test_route": {
+			"func": func(rng: RandomNumberGenerator) -> Resource:
+				return _ZoneRecipes.test_route(rng),
+			"description": "Test Route — 20×15 grass zone with encounters, warp, sign, wandering NPC.",
 		},
 	}
