@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://bks1s08t3se7n"]
+
+[ext_resource type="TileSet" path="res://assets/sprites/processed/Mystery_16x16.tres" id="1_x8621"]
+
+[node name="TileMap" type="TileMap" unique_id=890987306]
+position = Vector2(378, 765)
+tile_set = ExtResource("1_x8621")
+format = 2
