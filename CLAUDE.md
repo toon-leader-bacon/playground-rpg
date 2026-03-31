@@ -109,6 +109,16 @@ Correct pattern:
 script = ExtResource("1_id")
 ```
 
+### `.tres` file got-chas
+
+The `.tres` text format has non-obvious differences from GDScript/Python syntax that
+cause silent parse errors:
+
+| Field type | GDScript / Python look-alike (WRONG) | Correct `.tres` format |
+|---|---|---|
+| `PackedStringArray` | `PackedStringArray(["a", "b"])` | `PackedStringArray("a", "b")` — no brackets |
+| `Dictionary` with Resource values | `{"k": SubResource("id")}` inline on one line | Multiline block (ResourceSaver handles this) |
+
 ### Headless class cache
 
 After adding a script with class_name, run:
@@ -122,3 +132,15 @@ godot --headless -s addons/gdUnit4/bin/GdUnitCmdTool.gd --ignoreHeadlessMode --a
 ```
 
 Use `--add "res://tests/path/to/TestFile.gd"` to run a single suite.
+
+### Autoload name conflicts with class_name
+
+  If a script has `class_name Foo` and you also register an autoload named `Foo`, Godot will
+  emit "Class 'Foo' hides an autoload singleton" on every reload of scripts that import from
+  `Foo.gd`. The autoload "wins" at runtime but breaks IDE tools and causes confusing errors.
+
+  **Rule:** The autoload registration name in `project.godot` must never match an existing
+  `class_name` in the codebase. Choose a distinct name.
+
+  Example: `engine/core/Blackboard.gd` (the zone key-value store) is registered as `WorldBoard`
+  because `engine/shared/model/Blackboard.gd` already uses `class_name Blackboard`.
