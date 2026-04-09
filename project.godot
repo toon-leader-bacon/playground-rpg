@@ -21,6 +21,7 @@ GameState="*res://engine/core/GameState.gd"
 ConfigLoader="*res://engine/core/ConfigLoader.gd"
 BattleManager="*res://engine/core/BattleManager.gd"
 WorldManager="*res://engine/core/WorldManager.gd"
+WorldBoard="*res://engine/core/WorldBoard.gd"
 
 [display]
 
