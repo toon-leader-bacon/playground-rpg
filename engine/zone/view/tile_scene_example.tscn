@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://cubat3ly4uur2"]
+
+[node name="TileSceneExample" type="Node2D" unique_id=379883363]
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="." unique_id=2144011486]
+speed_scale = 0.5
+explosiveness = 0.1
+randomness = 0.75
+lifetime_randomness = 0.05
+angle_min = -37.6
+angle_max = 37.6

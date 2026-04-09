@@ -1,0 +1,59 @@
+[gd_scene format=4 uid="uid://cbfrdvi5km6qg"]
+
+[ext_resource type="TileSet" uid="uid://clb16oyf4tktf" path="res://engine/zone/view/new_tile_set.tres" id="1_ofcvt"]
+[ext_resource type="Script" uid="uid://btd52aewhov1j" path="res://engine/zone/controller/player_camera.gd" id="4_ggg2h"]
+[ext_resource type="Texture2D" uid="uid://ck01tkjoyhwl1" path="res://assets/sprites/raw/kenney_abstract-platformer/PNG/Items/yellowGem.png" id="4_n0nce"]
+[ext_resource type="Script" uid="uid://djtolcvpu1bcs" path="res://engine/zone/controller/tile_placer.gd" id="4_p2n3s"]
+[ext_resource type="Script" uid="uid://dfv14gonkj3o1" path="res://engine/zone/controller/movement.gd" id="5_ggg2h"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_n0nce"]
+
+[node name="ExampleZone" type="Node2D" unique_id=990309776]
+
+[node name="Ground" type="TileMapLayer" parent="." unique_id=1949078988]
+tile_map_data = PackedByteArray("AAAAAAAAAwAQAAUAAAABAAAAAwAQAAUAAAACAAAAAwAQAAUAAAADAAAAAwAQAAUAAAAEAAAAAwAQAAUAAAAFAAAAAwAQAAUAAAAGAAAAAwAQAAUAAAAHAAAAAwAQAAUAAAAIAAAAAwAQAAUAAAAJAAAAAwAQAAUAAAAKAAAAAwAQAAUAAAALAAAAAwAQAAUAAAALAAEAAwAQAAUAAAAIAAEAAwAQAAUAAAAGAAEAAAAMAAsAAAAFAAEAAAAMAAsAAAAEAAEAAwAQAAUAAAACAAEAAwAQAAUAAAABAAEAAwAQAAUAAAAAAAEAAwAQAAUAAAAAAAIAAwAQAAUAAAABAAIAAwAQAAUAAAACAAIAAwAQAAUAAAADAAIAAwAQAAUAAAAEAAIAAwAQAAUAAAAFAAIAAAAMAAsAAAAGAAIAAAAMAAsAAAAHAAIAAwAQAAUAAAALAAIAAwAQAAUAAAALAAMAAwAQAAUAAAAKAAMAAwAQAAUAAAAJAAMAAwAQAAUAAAAIAAMAAwAQAAUAAAAHAAMAAwAQAAUAAAAGAAMAAwAQAAUAAAAFAAMAAwAQAAUAAAAEAAMAAwAQAAUAAAADAAMAAwAQAAUAAAACAAMAAwAQAAUAAAABAAMAAwAQAAUAAAAAAAMAAwAQAAUAAAALAP//AwAQAAYAAAAKAP//AwAQAAYAAAAJAP//AwAQAAYAAAAIAP//AwAQAAYAAAAHAP//AwAQAAYAAAAGAP//AwAQAAYAAAAFAP//AwAQAAYAAAAEAP//AwAQAAYAAAADAP//AwAQAAUAAAACAP//AwAQAAUAAAABAP//AwAQAAUAAAAAAP//AwAQAAUAAAAAAP7/AwAQAAUAAAABAP7/AwAQAAUAAAACAP7/AwAQAAUAAAADAP7/AwAQAAUAAAAEAP7/AwAQAAUAAAAFAP7/AwAQAAUAAAAGAP7/AwAQAAUAAAAHAP7/AwAQAAUAAAAIAP7/AwAQAAUAAAAJAP7/AwAQAAUAAAAKAP7/AwAQAAUAAAALAP7/AwAQAAUAAAADAAEAAAAQAAUAAAAHAAEAAAAQAAUAAAAAAAQAAAAQAAUAAAABAAQAAAAQAAUAAAACAAQAAAAQAAUAAAADAAQAAAAQAAUAAAAEAAQAAAAQAAUAAAAFAAQAAAAQAAYAAAAGAAQAAAAQAAYAAAAHAAQAAAAQAAYAAAAIAAQAAAAQAAYAAAAJAAQAAAAQAAYAAAAKAAQAAAAQAAYAAAALAAQAAAAQAAUAAAALAAUAAAAQAAUAAAAKAAUAAAAQAAUAAAAJAAUAAAAQAAUAAAAIAAUAAAAQAAUAAAAHAAUAAAAQAAUAAAAGAAUAAAAQAAUAAAAFAAUAAAAQAAUAAAAEAAUAAAAQAAUAAAADAAUAAAAQAAUAAAACAAUAAAAQAAUAAAABAAUAAAAQAAUAAAAAAAUAAAAQAAUAAAAIAAIAAAAQAAUAAAAKAAEAAAAQAAUAAAAJAAEAAAAQAAUAAAAJAAIAAAAQAAUAAAAKAAIAAAAQAAUAAAA=")
+tile_set = ExtResource("1_ofcvt")
+y_sort_origin = -4
+
+[node name="Decoration" type="TileMapLayer" parent="." unique_id=1473156931]
+tile_map_data = PackedByteArray("AAACAAEAAwALAAQAAAADAAIAAwAKAAQAAAADAAEAAAALAAYAAAA=")
+tile_set = ExtResource("1_ofcvt")
+collision_enabled = false
+navigation_enabled = false
+
+[node name="Effects" type="TileMapLayer" parent="Decoration" unique_id=684323045]
+tile_map_data = PackedByteArray("AAADAAEABAAAAAAAAQAHAAEABAAAAAAAAQA=")
+tile_set = ExtResource("1_ofcvt")
+collision_enabled = false
+navigation_enabled = false
+
+[node name="Overhead" type="TileMapLayer" parent="." unique_id=1444618718]
+z_index = 10
+tile_map_data = PackedByteArray("AAAIAAEAAAAQAAgAAAAIAAIAAAAQAAgAAAAJAAIAAAAQAAgAAAAJAAEAAAAQAAgAAAA=")
+tile_set = ExtResource("1_ofcvt")
+
+[node name="Effects" type="TileMapLayer" parent="Overhead" unique_id=1620903382]
+tile_set = ExtResource("1_ofcvt")
+
+[node name="Player" type="Area2D" parent="." unique_id=2075383980]
+z_index = 5
+position = Vector2(240.5, 12.14)
+script = ExtResource("5_ggg2h")
+
+[node name="Sprite2D" type="Sprite2D" parent="Player" unique_id=55359507]
+texture = ExtResource("4_n0nce")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player" unique_id=953937870]
+shape = SubResource("RectangleShape2D_n0nce")
+
+[node name="RayCast2D" type="RayCast2D" parent="Player" unique_id=643767956]
+z_index = 5
+collision_mask = 3
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Player" unique_id=1028218540]
+
+[node name="Camera2D" type="Camera2D" parent="Player" unique_id=1077931720]
+script = ExtResource("4_ggg2h")
+
+[node name="tile_placer" type="Node2D" parent="." unique_id=1204041690]
+script = ExtResource("4_p2n3s")

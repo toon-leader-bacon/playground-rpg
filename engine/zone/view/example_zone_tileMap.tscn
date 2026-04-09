@@ -1,0 +1,31 @@
+[gd_scene format=3 uid="uid://dmxr5tthkltq2"]
+
+[ext_resource type="TileSet" uid="uid://clb16oyf4tktf" path="res://engine/zone/view/new_tile_set.tres" id="1_85bhg"]
+[ext_resource type="Script" uid="uid://dfv14gonkj3o1" path="res://engine/zone/controller/movement.gd" id="2_qbqcs"]
+[ext_resource type="Texture2D" uid="uid://ck01tkjoyhwl1" path="res://assets/sprites/raw/kenney_abstract-platformer/PNG/Items/yellowGem.png" id="3_l821k"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_n0nce"]
+
+[node name="ExampleZone" type="Node2D" unique_id=990309776]
+
+[node name="Player" type="Area2D" parent="." unique_id=2075383980]
+z_index = 5
+position = Vector2(240.5, 12.14)
+script = ExtResource("2_qbqcs")
+
+[node name="Sprite2D" type="Sprite2D" parent="Player" unique_id=55359507]
+texture = ExtResource("3_l821k")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player" unique_id=953937870]
+shape = SubResource("RectangleShape2D_n0nce")
+
+[node name="RayCast2D" type="RayCast2D" parent="Player" unique_id=643767956]
+z_index = 5
+collision_mask = 3
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Player" unique_id=1028218540]
+
+[node name="TileMap" type="TileMap" parent="." unique_id=430029664]
+tile_set = ExtResource("1_85bhg")
+format = 2
+layer_0/tile_data = PackedInt32Array(0, 1048576, 5, 1, 1048576, 5, 2, 1048576, 5, 3, 1048576, 5, 4, 1048576, 5, 5, 1048576, 5, 6, 1048576, 5, 7, 1048576, 5, 65543, 1048576, 5, 65542, 1048576, 5, 65541, 1048576, 5, 65540, 1048576, 5, 65539, 1048576, 5, 65538, 1048576, 5, 65537, 1048576, 5, 65536, 1048576, 5, 131072, 1048576, 5, 131073, 1048576, 5, 131074, 1048576, 5, 131075, 1048576, 5, 131076, 1048576, 5, 131077, 1048576, 5, 131078, 1048576, 5, 131079, 1048576, 5, 196615, 1048576, 5, 196614, 1048576, 5, 196613, 1048576, 5, 196612, 1048576, 5, 196611, 1048576, 5, 196610, 1048576, 5, 196609, 1048576, 5, 196608, 1048576, 5)

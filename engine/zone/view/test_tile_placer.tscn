@@ -1,0 +1,55 @@
+[gd_scene format=3 uid="uid://bv214jv68ocbo"]
+
+[ext_resource type="Script" uid="uid://djtolcvpu1bcs" path="res://engine/zone/controller/tile_placer.gd" id="1_bn482"]
+[ext_resource type="TileSet" uid="uid://clb16oyf4tktf" path="res://engine/zone/view/new_tile_set.tres" id="2_slpgj"]
+[ext_resource type="Script" uid="uid://dfv14gonkj3o1" path="res://engine/zone/controller/movement.gd" id="3_vgv8f"]
+[ext_resource type="Texture2D" uid="uid://ck01tkjoyhwl1" path="res://assets/sprites/raw/kenney_abstract-platformer/PNG/Items/yellowGem.png" id="4_24sqw"]
+[ext_resource type="Script" uid="uid://btd52aewhov1j" path="res://engine/zone/controller/player_camera.gd" id="5_myj64"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qpkv8"]
+
+[node name="TestTilePlacer" type="Node2D" unique_id=123549935]
+
+[node name="Node2D" type="Node2D" parent="." unique_id=209244221]
+script = ExtResource("1_bn482")
+
+[node name="Ground" type="TileMapLayer" parent="." unique_id=1222959114]
+tile_set = ExtResource("2_slpgj")
+y_sort_origin = -4
+
+[node name="Decoration" type="TileMapLayer" parent="." unique_id=1012675355]
+tile_set = ExtResource("2_slpgj")
+collision_enabled = false
+navigation_enabled = false
+
+[node name="Effects" type="TileMapLayer" parent="Decoration" unique_id=138723584]
+tile_set = ExtResource("2_slpgj")
+collision_enabled = false
+navigation_enabled = false
+
+[node name="Overhead" type="TileMapLayer" parent="." unique_id=620770479]
+z_index = 10
+tile_set = ExtResource("2_slpgj")
+
+[node name="Effects" type="TileMapLayer" parent="Overhead" unique_id=452072155]
+tile_set = ExtResource("2_slpgj")
+
+[node name="Player" type="Area2D" parent="." unique_id=245175512]
+z_index = 5
+position = Vector2(240.5, 12.14)
+script = ExtResource("3_vgv8f")
+
+[node name="Sprite2D" type="Sprite2D" parent="Player" unique_id=1415740285]
+texture = ExtResource("4_24sqw")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player" unique_id=762019383]
+shape = SubResource("RectangleShape2D_qpkv8")
+
+[node name="RayCast2D" type="RayCast2D" parent="Player" unique_id=321612801]
+z_index = 5
+collision_mask = 3
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Player" unique_id=1294718403]
+
+[node name="Camera2D" type="Camera2D" parent="Player" unique_id=2102214185]
+script = ExtResource("5_myj64")

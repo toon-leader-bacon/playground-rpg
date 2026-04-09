@@ -1,0 +1,38 @@
+
+"tiles": [
+    {
+        ; Implicitly this is tile 0, it's the 0th index
+        "collision_mask": [].
+        "sprite_sheet_uuid": 0,
+        "sprite_sheet_position_x": 16,
+        "sprite_sheet_position_y": 5
+    },
+    {
+        "id": "water",
+        "collision_mask": [2],
+        "sprite_sheet_uuid": 0,
+        "sprite_sheet_position_x": 12,
+        "sprite_sheet_position_y": 11
+    },
+    {
+        ; Implicity this is tile 2, at the 2nd index,
+        "collision_mask": [1, 2],
+        "sprite_sheet_uuid": 0,
+        "sprite_sheet_position_x": 16,
+        "sprite_sheet_position_y": 6
+    }
+]
+
+
+; Layer map is always a 2d shape (List of List of values)
+; This representation does NOT have to be rectangular, a 'jagged' array is valid
+; Either the index in the above "tiles" table, or the "id" of the tile is used
+; the value "none" is reserved to represent a void, no tile placed
+; In practice, there can be considered an infinite number of "none" voids all around this map
+; This example features a map that is like a capital L, but with a little jut back up at the right most tip to demonstrate
+"ground_layer": [
+    [0,0,0,    0],
+    [0,0,water,0,none,none,0,0],
+    [2,0,water,0,0,   0,   0,0],
+    [2,0,0,    0,0,   0,   0,0]
+]
